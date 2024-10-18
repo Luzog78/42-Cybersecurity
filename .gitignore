@@ -1,0 +1,45 @@
+#####################################
+## Ignore everything (but folders) ##
+#####################################
+
+*
+!*/
+*.*
+
+
+############################
+## But not these files... ##
+############################
+
+!*.sh
+!*.c
+!*.h
+!*.cpp
+!*.hpp
+!*.py
+!*.html
+!*.css
+!*.js
+!*.json
+!*.yml
+!*.sql
+!*.svg
+!*.md
+!*.env
+!*.conf
+!*.ttf
+!.gitignore
+!.gitmodules
+!Makefile
+
+
+################
+## Exceptions ##
+################
+
+build
+*.tmp.*
+*subject.pdf
+.vscode
+__pycache__
+secret*
