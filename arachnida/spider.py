@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/15 13:17:06 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/18 15:32:35 by ysabik           ###   ########.fr        #
+#    Updated: 2024/10/18 19:09:01 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ class File:
 		self.url: str			= url
 		self.path: str			= path
 		self.downloaded: bool	= False
-	
+
 	def __repr__(self):
 		return 'File(' \
 			+ f"url='{self.url}', " \
@@ -87,7 +87,7 @@ class Spider:
 		if not parsed.netloc:
 			return None
 		return f'{parsed.scheme}://{parsed.netloc}/'
-	
+
 	@staticmethod
 	def is_searched_file(uri: str | ParseResult) -> bool:
 		if isinstance(uri, str):
@@ -113,7 +113,7 @@ class Spider:
 		self.visited: set[str]			= set()
 		self.files: set[File]			= set()
 		self.viewed: set[str]			= set()
-	
+
 	def __repr__(self):
 		return 'Spider(' \
 			+ f"url='{self.url}', " \
@@ -125,7 +125,7 @@ class Spider:
 			+ f"files={self.files}, " \
 			+ f"viewed={self.viewed}" \
 			+ ')'
-	
+
 	def __str__(self):
 		s = f"§7§l§nSpider '§r§o§n{self.url}§7§l§n':§r\n"
 		s += f"  §7Path:§r {self.path}\n"
@@ -163,7 +163,7 @@ class Spider:
 					pass
 		except Exception:
 			pass
-	
+
 	def normalize_url(self, url: str, current: str | None) -> tuple[str, bool]:
 		if url.startswith('http://') or url.startswith('https://'):
 			return url, Spider.get_url_base(url) == self.url_base
@@ -181,9 +181,9 @@ class Spider:
 			error(f"Bad URL format. ('{self.url}')")
 			return 1
 		self.url_netloc = urlparse(self.url).netloc
-		
+
 		self.urls = { (self.url, 0) }
-		
+
 		while self.urls:
 			url, depth = self.urls.pop()
 			self.visited.add(url)

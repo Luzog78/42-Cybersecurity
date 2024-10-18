@@ -107,6 +107,7 @@ class Color:
 
 	DEFAULT_MAGIC_CHAR = '§'
 
+	@staticmethod
 	def c(s: str, char: str = DEFAULT_MAGIC_CHAR) -> str:
 		string = ''
 		s_len = len(s)
@@ -123,3 +124,27 @@ class Color:
 				string += s[i]
 			i += 1
 		return string
+
+	@staticmethod
+	def print(
+			*values: object,
+			sep: str | None = " ",
+			end: str | None = "\n",
+			reset: bool = True,
+			char: str = DEFAULT_MAGIC_CHAR,
+			) -> None:
+		s = sep.join(str(value) for value in values)
+		if reset:
+			print(Color.c(s, char) + Color.RESET, end=end)
+		else:
+			print(Color.c(s, char), end=end)
+
+
+def cprint(
+		*values: object,
+		sep: str | None = " ",
+		end: str | None = "\n",
+		reset: bool = True,
+		char: str = Color.DEFAULT_MAGIC_CHAR,
+		) -> None:
+	Color.print(*values, sep=sep, end=end, reset=reset, char=char)
