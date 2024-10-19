@@ -6,21 +6,16 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/19 14:18:22 by ysabik           ###   ########.fr        #
+#    Updated: 2024/10/19 14:16:40 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME			= arachnida
-
-SPIDER			= spider
-SPIDER_MAIN		= spider.py
-
-SCORPION		= scorpion
-SCORPION_MAIN	= scorpion.py
+NAME			= ft_otp
+MAIN			= scorpion.py
 
 PYTHON			= python3
 VENVPATH		= venv
-REQUIREMENTS	= requests bs4 exif
+REQUIREMENTS	= 
 
 
 __REQ			= $(addprefix $(VENVPATH)/.__installed/__, $(REQUIREMENTS))
@@ -29,15 +24,8 @@ __REQ			= $(addprefix $(VENVPATH)/.__installed/__, $(REQUIREMENTS))
 all: $(NAME)
 
 
-$(NAME): $(SPIDER) $(SCORPION)
-
-
-$(SPIDER): $(__REQ)
-	$(call compile, $(SPIDER), $(SPIDER_MAIN))
-
-
-$(SCORPION): $(__REQ)
-	$(call compile, $(SCORPION), $(SCORPION_MAIN))
+$(NAME): $(__REQ)
+	$(call compile, $(NAME), $(MAIN))
 
 
 $(VENVPATH):
@@ -59,14 +47,14 @@ clean:
 
 fclean: clean
 	@echo "[REMV] Removing executables..."
-	rm -f $(SPIDER) $(SCORPION)
+	rm -f $(NAME)
 
 
 re: fclean all
 
 
 define compile
-	@echo "Compiling $(1)..."
+	@echo "[COMP] Compiling $(1)..."
 	@echo "#!/bin/sh" > $(1)
 	@if [ -n "$(REQUIREMENTS)" ]; then \
 		echo "$(abspath $(VENVPATH))/bin/python $(abspath $(2)) \$$@" >> $(1); \
