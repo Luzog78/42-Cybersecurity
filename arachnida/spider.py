@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/15 13:17:06 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/18 19:09:01 by ysabik           ###   ########.fr        #
+#    Updated: 2024/10/19 13:38:45 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ from cyberlib import Color
 
 def error(*values: object,
 		  color: str | None = Color.RED,
-		  start: str | None = sys.argv[0] + ':',
+		  start: str | None = 'spider:',
 		  sep: str | None = " ",
 		  end: str | None = "\n"):
 	messages: list[str] = []
@@ -309,10 +309,9 @@ if __name__ == '__main__':
 		sys.exit(spider)
 
 	assert isinstance(spider, Spider)
+	result = 0
 	try:
-		spider.crawl()
-		print(spider.visited)
-		print(spider.files)
+		result = spider.crawl()
 	except KeyboardInterrupt:
 		error('>>> Stopped by user <<<', start='\r  \r', color=Color.YELLOW)
 	except Exception as e:
@@ -323,5 +322,6 @@ if __name__ == '__main__':
 			print(Color.RED + Color.FAINT, end='')
 			traceback.print_exc()
 			print(Color.RESET)
-	print()
-	print(spider)
+	if not result:
+		print()
+		print(spider)
