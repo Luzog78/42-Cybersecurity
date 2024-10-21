@@ -6,12 +6,12 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/19 14:16:40 by ysabik           ###   ########.fr        #
+#    Updated: 2024/10/21 07:18:26 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			= ft_otp
-MAIN			= scorpion.py
+MAIN			= ft_otp.py
 
 PYTHON			= python3
 VENVPATH		= venv
@@ -59,7 +59,7 @@ define compile
 	@if [ -n "$(REQUIREMENTS)" ]; then \
 		echo "$(abspath $(VENVPATH))/bin/python $(abspath $(2)) \$$@" >> $(1); \
 	else \
-		echo "$(abspath $(PYTHON)) $(abspath $(2)) \$$@" >> $(1); \
+		echo "$$(which $(PYTHON)) $(abspath $(2)) \$$@" >> $(1); \
 	fi
 	@chmod +x $(1)
 	@echo "[DONE] $(1) compiled."
