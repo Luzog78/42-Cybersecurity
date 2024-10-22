@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/21 07:18:26 by ysabik           ###   ########.fr        #
+#    Updated: 2024/10/21 11:38:04 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ MAIN			= ft_otp.py
 
 PYTHON			= python3
 VENVPATH		= venv
-REQUIREMENTS	= 
+REQUIREMENTS	= easygui pillow qrcode qrcode[pil]
 
 
 __REQ			= $(addprefix $(VENVPATH)/.__installed/__, $(REQUIREMENTS))

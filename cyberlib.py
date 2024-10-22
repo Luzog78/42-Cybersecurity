@@ -6,9 +6,12 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/21 09:31:07 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/21 09:33:49 by ysabik           ###   ########.fr        #
+#    Updated: 2024/10/21 10:34:21 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+from typing import Any
+
 
 class Color:
 	BLACK		= '\033[30m'
@@ -203,14 +206,14 @@ class ArgFlag:
 				long = f.format(f'--{self.long}')
 		elif long_len:
 			long = ' ' * (long_len + (2 if short else 0))
-		return f'{short}{long}  {self.desc}'
+		return f'{short}{long}  {"" if self.desc is None else self.desc}'
 	
 	def __repr__(self) -> str:
 		return '<ArgFlag' \
-			+ f' short={repr(self.short)}' \
-			+ f' long={repr(self.long)}' \
+			+ f' short={"None" if self.short is None else repr(self.short)}' \
+			+ f' long={"None" if self.long is None else repr(self.long)}' \
 			+ f' args={self.args}' \
-			+ f' desc={repr(self.desc)}' \
+			+ f' desc={"None" if self.desc is None else repr(self.desc)}' \
 			+ f' combinable={self.combinable}' \
 			+ f' args_len={self.args_len}' \
 			+ f' short_len={self.short_len}' \
@@ -242,8 +245,34 @@ class ArgParser:
 		'''
 		self.args: list[str]		= args
 		self.case_sensitive: bool	= case_sensitive
-		self.flags: set[ArgFlag]	= set()
+		self.pre_desc: list[str]	= []
+		self.post_desc: list[str]	= []
+		self.flags: list[ArgFlag]	= []
 		self.free_args: list[str]	= []
+
+	def add_pre_desc(self, *desc: Any, sep: str = ' ') -> 'ArgParser':
+		'''Set the description to display before the flags
+
+		:param desc: The description to display before the flags
+		:type desc: str
+
+		:return: The current ArgParser object
+		:rtype: ArgParser
+		'''
+		self.pre_desc.append(sep.join(str(d) for d in desc))
+		return self
+	
+	def add_post_desc(self, *desc: str, sep: str = ' ') -> 'ArgParser':
+		'''Set the description to display after the flags
+
+		:param desc: The description to display after the flags
+		:type desc: str
+
+		:return: The current ArgParser object
+		:rtype: ArgParser
+		'''
+		self.post_desc.append(sep.join(str(d) for d in desc))
+		return self
 
 	def add_flag(self, short: str | None, long: str | None,
 			args: list[str] | None, desc: str | None) -> 'ArgParser':
@@ -261,7 +290,7 @@ class ArgParser:
 		:return: The current ArgParser object
 		:rtype: ArgParser
 		'''
-		self.flags.add(ArgFlag(short, long, args, desc))
+		self.flags.append(ArgFlag(short, long, args, desc))
 		return self
 
 	def parse(self) -> 'ArgParser':
@@ -356,6 +385,38 @@ class ArgParser:
 			if identifier == short or identifier == long:
 				return flag
 		return None
+	
+	def get_value(self, identifier: int | str, default: Any | None = None) -> str | None:
+		'''Get the UNIQUE (first) value of a flag by its identifier
+
+		:param identifier: The identifier of the flag (either the index, the short or the long name)
+		:type identifier: int | str
+
+		:raises ArgError: If the flag is unknown
+
+		:return: The UNIQUE (first) value of the flag has a value, else default if specified, None otherwise
+		:rtype: Any | None
+		'''
+		flag = self.get_flag(identifier)
+		if flag is None:
+			raise ArgError(f'Unknown flag `{identifier}` (as identifier)')
+		return flag.values[0] if flag.values else default
+	
+	def get_values(self, identifier: int | str) -> list[str]:
+		'''Get the values of a flag by its identifier
+
+		:param identifier: The identifier of the flag (either the index, the short or the long name)
+		:type identifier: int | str
+
+		:raises ArgError: If the flag is unknown
+
+		:return: The values of the flag
+		:rtype: list[str]
+		'''
+		flag = self.get_flag(identifier)
+		if flag is None:
+			raise ArgError(f'Unknown flag `{identifier}` (as identifier)')
+		return flag.values
 
 	def __str__(self) -> str:
 		'''Return a string representation of the ArgParser object
@@ -384,12 +445,20 @@ class ArgParser:
 		short_len = max((flag.short_len for flag in self.flags), default=0)
 		long_len = max((flag.long_len for flag in self.flags), default=0)
 		lines = '\n'.join('  ' + flag.__str__(short_len, long_len) for flag in self.flags)
-		return 'Flags:\n' + lines
+		string = ''
+		if self.pre_desc is not None:
+			string += '\n'.join(self.pre_desc) + '\n\n'
+		string += 'Flags:\n' + lines
+		if self.post_desc is not None:
+			string += '\n\n' + '\n'.join(self.post_desc)
+		return string
 	
 	def __repr__(self) -> str:
 		return '<ArgParser' \
 			+ f' args={self.args}' \
 			+ f' case_sensitive={self.case_sensitive}' \
+			+ f' pre_desc={self.pre_desc}' \
+			+ f' post_desc={self.post_desc}' \
 			+ f' free_args={self.free_args}' \
 			+ f' flags={self.flags}' \
 			+ '>'
