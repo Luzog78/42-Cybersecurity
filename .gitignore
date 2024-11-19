@@ -30,6 +30,7 @@
 !*.ttf
 !.gitignore
 !.gitmodules
+!Dockerfile
 !Makefile
 
 

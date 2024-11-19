@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<video id="v" autoplay="true" style="display: none;"></video>
+	<canvas id="c" width="640" height="480" style="display: none;"></canvas>
+	<div id="d" style="width: 100vw; text-align: center;">
+		<h3>42-Cybersecurity - ft_onion</h3>
+		<pre id="p" style="font-size: 10px; line-height: 10px; letter-spacing: 4px; width: 100vw; height: 100vh; font-family: monospace;"></pre>
+	</div>
+	
+	<script type="application/javascript">
+		const chars = ".,:;!-=**%%$$&&#@#@";
+
+		var v = document.getElementById('v');
+		var c = document.getElementById('c');
+		var p = document.getElementById('p');
+		var ctx = c.getContext('2d');
+
+		navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+		navigator.getMedia({
+			video: true,
+			audio: false
+		}, function(stream) {
+			v.srcObject = stream;
+			v.play();
+		}, function(error) {
+			console.log(error);
+		});
+
+		v.addEventListener('play', function() {
+			draw(this, ctx, p, c.width, c.height);
+		}, false);
+
+		function draw(v, c, p, w, h) {
+			if(v.paused || v.ended)
+				return false;
+			c.reset();
+			c.drawImage(v, 0, 0, w, h);
+			modeAscii(v, c, p, w, h);
+			setTimeout(draw, 20, v, c, p, w, h);
+		}
+
+		function modeGray(v, c, w, h) {
+			let imageData = c.getImageData(0, 0, w, h);
+
+			for(let i = 0; i < imageData.data.length; i += 4) {
+				let brightness = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
+				imageData.data[i] = imageData.data[i + 1] = imageData.data[i + 2] = brightness;
+				imageData.data[i + 3] = 255;
+			}
+			c.putImageData(imageData, 0, 0);
+		}
+
+		function modeAscii(v, c, p, w, h) {
+			let imageData = c.getImageData(0, 0, w, h);
+			let ascii = '';
+			let step = 4 * (w / 100).toFixed();
+
+			for(let i = 0; i < 80; i += 1) {
+				for(let j = 0; j < 100; j += 1) {
+					let idx = (i * w + j) * step;
+					let brightness = (imageData.data[idx] + imageData.data[idx + 1] + imageData.data[idx + 2]) / 3;
+					let index = chars.length - brightness / 255 * (chars.length - 1);
+					ascii += chars.charAt(index);
+				}
+				ascii += '\n';
+			}
+			p.innerHTML = ascii;
+		}
+
+	</script>
+</body>
+</html>
