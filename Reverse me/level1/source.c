@@ -6,7 +6,7 @@
 /*   By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 14:36:12 by ysabik            #+#    #+#             */
-/*   Updated: 2024/11/30 16:07:03 by ysabik           ###   ########.fr       */
+/*   Updated: 2024/11/30 16:57:16 by ysabik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int main() {
 	char	*key = "__stack_check";	// located at -0x7a(ebp)
 
 	printf("Please enter key: ");	// call <printf@plt>
-	scanf("%s", buff);				// call <_iso99_scanf@plt>
+	scanf("%s", buff);				// call <__isoc99_scanf@plt>
 
 	int ret = strcmp(buff, key);	// call <strcmp@plt>
 	if (ret != 0)					// cmp 0, eax
