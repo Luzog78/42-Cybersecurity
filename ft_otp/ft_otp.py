@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 14:21:46 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/22 13:57:32 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/01 02:50:51 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,7 @@ def hotp(key: bytes, counter: int) -> int:
 				| hs[offset + 1] << 16 \
 				| hs[offset + 2] << 8 \
 				| hs[offset + 3]
-	
+
 	return bin_code % 10 ** 6
 
 
@@ -178,7 +178,7 @@ if __name__ == '__main__':
 			print(key.hex(), reset=False)
 		if key is not None:
 			print(create_qrcode_ascii(key))
-	
+
 	k_file = ap.get_value('k')
 	if k_file:
 		code = get_code(k_file, time_step, verbose=True)
@@ -191,11 +191,11 @@ if __name__ == '__main__':
 			print(key.hex(), reset=False)
 		if key is not None:
 			print(create_qrcode_ascii(key))
-	
+
 	gui_flag = ap.get_value('gui')
 	if gui_flag:
 		open_gui(verbose)
-	
+
 	if not (g_file or G_file or k_file or qr_flag or gui_flag):
 		print('§cNo arguments given\nTry ./ft_otp --help for help')
 		exit(1)

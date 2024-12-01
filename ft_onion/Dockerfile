@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/22 15:03:20 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/23 12:46:11 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/01 02:50:51 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ RUN		rm -rf /etc/nginx/sites-available/* \
 		&& chmod -R 755 /var/www/ft_onion
 
 
-# RUN		mkdir -p 
+# RUN		mkdir -p
 
 COPY	./srcs/index.html /var/www/ft_onion/index.html
 COPY	./srcs/nginx.conf /etc/nginx/nginx.conf

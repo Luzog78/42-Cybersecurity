@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/21 09:31:07 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/21 10:34:21 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/01 02:50:51 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -182,10 +182,10 @@ class ArgFlag:
 		self.args_len: int	= sum(len(arg) + 3 for arg in args) if args else 0
 		self.short_len: int	= len(short) + 1 + self.args_len if short else 0
 		self.long_len: int	= len(long) + 2 + self.args_len if long else 0
-	
+
 	def clear(self) -> None:
 		self.values.clear()
-	
+
 	def __str__(self, short_len: int = 0, long_len: int = 0) -> str:
 		short = ''
 		if self.short:
@@ -207,7 +207,7 @@ class ArgFlag:
 		elif long_len:
 			long = ' ' * (long_len + (2 if short else 0))
 		return f'{short}{long}  {"" if self.desc is None else self.desc}'
-	
+
 	def __repr__(self) -> str:
 		return '<ArgFlag' \
 			+ f' short={"None" if self.short is None else repr(self.short)}' \
@@ -261,7 +261,7 @@ class ArgParser:
 		'''
 		self.pre_desc.append(sep.join(str(d) for d in desc))
 		return self
-	
+
 	def add_post_desc(self, *desc: str, sep: str = ' ') -> 'ArgParser':
 		'''Set the description to display after the flags
 
@@ -385,7 +385,7 @@ class ArgParser:
 			if identifier == short or identifier == long:
 				return flag
 		return None
-	
+
 	def get_value(self, identifier: int | str, default: Any | None = None) -> str | None:
 		'''Get the UNIQUE (first) value of a flag by its identifier
 
@@ -401,7 +401,7 @@ class ArgParser:
 		if flag is None:
 			raise ArgError(f'Unknown flag `{identifier}` (as identifier)')
 		return flag.values[0] if flag.values else default
-	
+
 	def get_values(self, identifier: int | str) -> list[str]:
 		'''Get the values of a flag by its identifier
 
@@ -452,7 +452,7 @@ class ArgParser:
 		if self.post_desc is not None:
 			string += '\n\n' + '\n'.join(self.post_desc)
 		return string
-	
+
 	def __repr__(self) -> str:
 		return '<ArgParser' \
 			+ f' args={self.args}' \
