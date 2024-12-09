@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/02 09:16:15 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/09 04:21:51 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/09 04:24:10 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -232,4 +232,3 @@ if __name__ == '__main__':
 		stockholm.reverse = True
 
 	stockholm.infect()
-
