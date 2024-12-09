@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/02 09:16:15 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/09 04:24:10 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/09 04:38:39 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -182,15 +182,17 @@ class Stockholm:
 		os.remove(path)
 		return filename
 
-
 if __name__ == '__main__':
 	ap = ArgParser(sys.argv[1:]) \
 			.add_pre_desc('42-Cybersecurity - Stockholm | First ransomware') \
 			.add_pre_desc('Infects all the files contained in a folder, encrypting with AES-256-CTR.') \
 			.add_pre_desc() \
+			.add_pre_desc('See https://cloud.google.com/blog/topics/threat-intelligence/wannacry-malware-profile/?hl=en') \
+			.add_pre_desc() \
 			.add_pre_desc('Usage: ./stockholm [FLAGS]') \
 			.add_flag('k', 'key', ['key'], 'Encrypt files with <key>. It should be at least 16 chars.') \
-			.add_flag('r', 'reverse', None, 'Reverse the infection.') \
+			.add_flag('r', 'reverse', ['key'], 'Reverse the infection.') \
+			.add_flag('R', None, None, 'Reverse the infection (with the default key).') \
 			.add_flag('d', 'dir', ['path'], 'Infect the folder <path>. By default: ' + Stockholm.DEFAULT_DIR) \
 			.add_flag('s', 'silent', None, 'Do not print anything (even errors).') \
 			.add_flag('v', 'version', None, 'Get the current version.') \
@@ -204,7 +206,7 @@ if __name__ == '__main__':
 		exit(1)
 
 	if ap.get_value('h'):
-		print(ap)
+		cprint(ap)
 		exit(0)
 
 	if ap.get_value('v'):
