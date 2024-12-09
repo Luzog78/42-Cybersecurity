@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/09 03:24:17 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/09 04:25:40 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,7 +52,7 @@ clean:
 
 fclean: clean
 	@echo "[REMV] Removing executables..."
-	rm -f $(MAIN) $(MAIN)._sh
+	rm -f $(NAME) $(NAME)._sh
 
 
 re: fclean all
