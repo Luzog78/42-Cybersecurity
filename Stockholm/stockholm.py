@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/02 09:16:15 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/09 04:38:39 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/09 04:48:53 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -189,6 +189,7 @@ if __name__ == '__main__':
 			.add_pre_desc() \
 			.add_pre_desc('See https://cloud.google.com/blog/topics/threat-intelligence/wannacry-malware-profile/?hl=en') \
 			.add_pre_desc() \
+			.add_pre_desc() \
 			.add_pre_desc('Usage: ./stockholm [FLAGS]') \
 			.add_flag('k', 'key', ['key'], 'Encrypt files with <key>. It should be at least 16 chars.') \
 			.add_flag('r', 'reverse', ['key'], 'Reverse the infection.') \
@@ -197,6 +198,21 @@ if __name__ == '__main__':
 			.add_flag('s', 'silent', None, 'Do not print anything (even errors).') \
 			.add_flag('v', 'version', None, 'Get the current version.') \
 			.add_flag('h', 'help', None, 'Print this help message') \
+			.add_post_desc() \
+			.add_post_desc('Examples:') \
+			.add_post_desc('  ./stockholm') \
+			.add_post_desc('  ./stockholm -R') \
+			.add_post_desc() \
+			.add_post_desc('  ./stockholm -k this_is_a_keyphrase') \
+			.add_post_desc('  ./stockholm -r this_is_a_keyphrase') \
+			.add_post_desc() \
+			.add_post_desc('  ./stockholm -s -k this_is_a_keyphrase -d /tmp/infection') \
+			.add_post_desc('  ./stockholm -s -r this_is_a_keyphrase -d /tmp/infection') \
+			.add_post_desc() \
+			.add_post_desc('  ./stockholm -v') \
+			.add_post_desc('  ./stockholm -h') \
+			.add_post_desc() \
+			.add_post_desc() \
 			.add_post_desc('Credits: ysabik (https://github.com/Luzog78)')
 
 	try:
