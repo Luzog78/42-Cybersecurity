@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/09 19:29:54 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/11 03:14:13 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,6 +57,7 @@ ftp:
 
 
 docker-clean:
+	rm -f ./attacker/$(NAME)
 	$(call exec, docker stop $$(docker ps -qa), $$(docker ps -qa))
 	$(call exec, docker rm $$(docker ps -qa), $$(docker ps -qa))
 	$(call exec, docker rmi -f $$(docker images -qa), $$(docker images -qa))
@@ -100,7 +101,7 @@ $(VENVPATH)/.__installed/__%: $(VENVPATH)
 
 clean:
 	@echo "[REMV] Removing virtual environment..."
-	rm -rf $(VENVPATH)
+	rm -rf $(VENVPATH) $(NAME).spec
 
 
 fclean: clean
