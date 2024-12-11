@@ -1,0 +1,44 @@
+services:
+  attacker:
+    build:
+      context: ./attacker
+      dockerfile: Dockerfile
+    container_name: attacker
+    privileged: true # Required for network tools like Scapy
+    stdin_open: true
+    tty: true
+    networks:
+      - testnet
+    volumes:
+      - .:/app # Mount your project directory
+
+  victim:
+    build:
+      context: ./victim
+      dockerfile: Dockerfile
+    container_name: victim
+    privileged: true
+    stdin_open: true
+    tty: true
+    networks:
+      - testnet
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: server
+    networks:
+      - testnet
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009" # Passive FTP ports
+    environment:
+      PUBLICHOST: "localhost"
+      FTP_USER_NAME: "testuser"
+      FTP_USER_PASS: "password"
+      FTP_USER_HOME: "/home/ftpuser"
+
+networks:
+  testnet:
+    driver: bridge
