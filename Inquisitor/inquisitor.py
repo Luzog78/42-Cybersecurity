@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/02 09:16:15 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/11 03:06:57 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/11 03:32:19 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -200,15 +200,34 @@ if __name__ == '__main__':
 			sys.argv.append('-v')
 
 	ap = ArgParser(sys.argv[1:]) \
-			.add_pre_desc('42-Cybersecurity - Stockholm | First ransomware') \
-			.add_pre_desc('Infects all the files contained in a folder, encrypting with AES-256-CTR.') \
+			.add_pre_desc('42-Cybersecurity - Inquisitor | ARP Spoofer') \
+			.add_pre_desc('ARP Spoofing attack to sniff FTP traffic between a Router and a Victim.') \
 			.add_pre_desc() \
-			.add_pre_desc('See https://cloud.google.com/blog/topics/threat-intelligence/wannacry-malware-profile/?hl=en') \
+			.add_pre_desc('Example:') \
+			.add_pre_desc('  Router: 192.168.0.1 [00:00:00:00:00:01]') \
+			.add_pre_desc('  Victim: 192.168.0.2 [00:00:00:00:00:02]') \
+			.add_pre_desc('  Attacker:           [00:00:00:00:00:03]') \
+			.add_pre_desc() \
+			.add_pre_desc('Before the attack:') \
+			.add_pre_desc('  192.168.0.2 (Victim) wants to send a packet to 192.168.0.1 (Router)') \
+			.add_pre_desc('  Victim\'s ARP Table:') \
+			.add_pre_desc('    - 192.168.0.1 --> [00:00:00:00:00:01]') \
+			.add_pre_desc('  The packet to 192.168.0.1 (Router) will go to [00:00:00:00:00:01] (Router)') \
+			.add_pre_desc() \
+			.add_pre_desc('After the attack:') \
+			.add_pre_desc('  Attacker send an ARP-Update packet to Victim.') \
+			.add_pre_desc('  Updated Victim\'s ARP Table:') \
+			.add_pre_desc('    - 192.168.0.1 --> [00:00:00:00:00:03]') \
+			.add_pre_desc('  The packet to 192.168.0.1 (Router) will go to [00:00:00:00:00:03] (Attacker)') \
 			.add_pre_desc() \
 			.add_pre_desc() \
 			.add_pre_desc('Usage: ./inquisitor <IP-src> <MAC-src> <IP-target> <MAC-target>') \
 			.add_flag('v', 'verbose', None, 'Show all FTP traffic') \
 			.add_flag('h', 'help', None, 'Print this help message') \
+			.add_post_desc() \
+			.add_post_desc('Example:') \
+			.add_post_desc('  ./inquisitor 192.168.0.2 00:00:00:00:00:02 192.168.0.1 00:00:00:00:00:01') \
+			.add_post_desc('  ./inquisitor  172.27.0.4 02:42:ac:1b:00:04  172.27.0.2 02:42:ac:1b:00:02 -v') \
 			.add_post_desc() \
 			.add_post_desc('Credits: ysabik (https://github.com/Luzog78)')
 
