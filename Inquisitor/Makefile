@@ -6,7 +6,7 @@
 #    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/11 03:14:13 by ysabik           ###   ########.fr        #
+#    Updated: 2024/12/11 03:15:44 by ysabik           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -101,7 +101,7 @@ $(VENVPATH)/.__installed/__%: $(VENVPATH)
 
 clean:
 	@echo "[REMV] Removing virtual environment..."
-	rm -rf $(VENVPATH) $(NAME).spec
+	rm -rf $(VENVPATH) ./build $(NAME).spec
 
 
 fclean: clean
