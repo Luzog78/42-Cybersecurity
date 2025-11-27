@@ -6,17 +6,16 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2025/11/27 13:35:56 by luzog78          ###   ########.fr        #
+#    Updated: 2025/11/27 13:35:28 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME			= stockholm
-MAIN			= stockholm.py
-PY_LIB			= ../cyberlib.py
+NAME			= vaccine
+MAIN			= vaccine.py
 
 PYTHON			= python3
 VENVPATH		= venv
-REQUIREMENTS	= pyinstaller pycryptodome
+REQUIREMENTS	= beautifulsoup4
 
 
 __REQ			= $(addprefix $(VENVPATH)/.__installed/__, $(REQUIREMENTS))
@@ -25,12 +24,8 @@ __REQ			= $(addprefix $(VENVPATH)/.__installed/__, $(REQUIREMENTS))
 all: $(NAME)
 
 
-$(NAME)._sh: $(__REQ)
-	$(call compile, $(NAME)._sh, $(MAIN))
-
-
-$(NAME): $(MAIN) $(PY_LIB) $(__REQ)
-	$(VENVPATH)/bin/pyinstaller --onefile --clean --distpath . $(MAIN) $(PY_LIB)
+$(NAME): $(__REQ)
+	$(call compile, $(NAME), $(MAIN))
 
 
 $(VENVPATH):
@@ -52,14 +47,14 @@ clean:
 
 fclean: clean
 	@echo "[REMV] Removing executables..."
-	rm -f $(NAME) $(NAME)._sh
+	rm -f $(NAME)
 
 
 re: fclean all
 
 
 define compile
-	@echo "Compiling $(1)..."
+	@echo "[COMP] Compiling $(1)..."
 	@echo "#!/bin/sh" > $(1)
 	@if [ -n "$(REQUIREMENTS)" ]; then \
 		echo "$(abspath $(VENVPATH))/bin/python $(abspath $(2)) \"\$$@\"" >> $(1); \

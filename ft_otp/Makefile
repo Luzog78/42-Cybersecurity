@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
+#    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/21 11:38:04 by ysabik           ###   ########.fr        #
+#    Updated: 2025/11/27 13:36:26 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,9 +57,9 @@ define compile
 	@echo "[COMP] Compiling $(1)..."
 	@echo "#!/bin/sh" > $(1)
 	@if [ -n "$(REQUIREMENTS)" ]; then \
-		echo "$(abspath $(VENVPATH))/bin/python $(abspath $(2)) \$$@" >> $(1); \
+		echo "$(abspath $(VENVPATH))/bin/python $(abspath $(2)) \"\$$@\"" >> $(1); \
 	else \
-		echo "$$(which $(PYTHON)) $(abspath $(2)) \$$@" >> $(1); \
+		echo "$$(which $(PYTHON)) $(abspath $(2)) \"\$$@\"" >> $(1); \
 	fi
 	@chmod +x $(1)
 	@echo "[DONE] $(1) compiled."
