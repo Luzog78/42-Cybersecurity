@@ -6,16 +6,16 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2025/11/27 13:35:28 by luzog78          ###   ########.fr        #
+#    Updated: 2025/11/28 10:19:07 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			= vaccine
-MAIN			= vaccine.py
+MAIN			= src/main.py
 
 PYTHON			= python3
 VENVPATH		= venv
-REQUIREMENTS	= beautifulsoup4
+REQUIREMENTS	= requests beautifulsoup4
 
 
 __REQ			= $(addprefix $(VENVPATH)/.__installed/__, $(REQUIREMENTS))

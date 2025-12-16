@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SQL Injection Demo - Home</title>
+	<style>
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 20px;
+		}
+		.container {
+			max-width: 800px;
+			margin: 0 auto;
+			background: white;
+			border-radius: 15px;
+			box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+			padding: 40px;
+		}
+		h1 {
+			color: #764ba2;
+			margin-bottom: 20px;
+			text-align: center;
+		}
+		.warning {
+			background: #fff3cd;
+			border: 2px solid #ffc107;
+			border-radius: 8px;
+			padding: 15px;
+			margin: 20px 0;
+		}
+		.warning strong {
+			color: #856404;
+		}
+		nav {
+			display: flex;
+			gap: 15px;
+			justify-content: center;
+			margin: 30px 0;
+			flex-wrap: wrap;
+		}
+		.btn {
+			display: inline-block;
+			padding: 15px 30px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			text-decoration: none;
+			border-radius: 8px;
+			font-weight: bold;
+			transition: transform 0.2s, box-shadow 0.2s;
+		}
+		.btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 5px 20px rgba(118, 75, 162, 0.4);
+		}
+		.info-box {
+			background: #f8f9fa;
+			border-left: 4px solid #667eea;
+			padding: 20px;
+			margin: 20px 0;
+			border-radius: 5px;
+		}
+		.info-box h2 {
+			color: #667eea;
+			margin-bottom: 10px;
+		}
+		ul {
+			margin-left: 20px;
+			margin-top: 10px;
+		}
+		li {
+			margin: 8px 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>🔓 SQL Injection Educational Demo</h1>
+		
+		<div class="warning">
+			<strong>⚠️ WARNING:</strong> This application is INTENTIONALLY vulnerable for educational purposes. 
+			Never deploy this in a production environment!
+		</div>
+
+		<div class="info-box">
+			<h2>About This Demo</h2>
+			<p>This web application demonstrates common SQL injection vulnerabilities. It contains:</p>
+			<ul>
+				<li><strong>User Login System</strong> - Vulnerable authentication</li>
+				<li><strong>Product Search</strong> - Vulnerable search functionality</li>
+				<li><strong>Hidden Database Tables</strong> - Secret data to discover</li>
+			</ul>
+		</div>
+
+		<nav>
+			<a href="/login" class="btn">Login Page</a>
+			<a href="/search" class="btn">Search Products</a>
+			<a href="/info" class="btn">Exploitation Guide</a>
+		</nav>
+
+		<div class="info-box">
+			<h2>Database Access</h2>
+			<p><strong>PHPMyAdmin:</strong> <a href="http://localhost:8081" target="_blank">http://localhost:8081</a></p>
+			<p style="margin-top: 10px;">
+				<strong>Credentials:</strong><br>
+				Username: root<br>
+				Password: rootpassword
+			</p>
+		</div>
+	</div>
+</body>
+</html>
