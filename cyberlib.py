@@ -3,14 +3,28 @@
 #                                                         :::      ::::::::    #
 #    cyberlib.py                                        :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
+#    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/21 09:31:07 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/01 02:50:51 by ysabik           ###   ########.fr        #
+#    Updated: 2025/12/16 03:03:16 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 from typing import Any
+from typing import TextIO
+
+
+__var_print_backup = print
+
+def _print(
+		*values: object,
+		sep: str | None = " ",
+		end: str | None = "\n",
+		file: TextIO | Any | None = None,
+		flush: bool = False,
+		) -> None:
+	'''Builtin print function alias'''
+	__var_print_backup(*values, sep=sep, end=end, file=file, flush=flush)
 
 
 class Color:
@@ -100,6 +114,7 @@ class Color:
 		'd': RESET + MAGENTA,
 		'e': RESET + YELLOW,
 		'f': RESET + WHITE,
+
 		'l': BOLD,
 		'n': UNDERLINE,
 		'o': ITALIC,
@@ -143,26 +158,87 @@ class Color:
 	@staticmethod
 	def print(
 			*values: object,
-			sep: str | None = " ",
-			end: str | None = "\n",
+			sep: str = " ",
+			end: str = "\n",
 			reset: bool = True,
 			char: str = DEFAULT_MAGIC_CHAR,
+			strip: bool = False,
+			file: TextIO | Any | None = None,
+			flush: bool = False,
 			) -> None:
 		s = sep.join(str(value) for value in values)
-		if reset:
-			print(Color.c(s, char) + Color.RESET, end=end)
+		if strip:
+			result = Color.strip(s + end, char, ansi=True)
 		else:
-			print(Color.c(s, char), end=end)
+			if reset:
+				s += Color.RESET
+			result = Color.c(s + end, char)
+		print(result, end='', flush=flush, file=file)
+
+	@staticmethod
+	def escape(
+			s: str,
+			char: str | None = DEFAULT_MAGIC_CHAR,
+			ansi: bool = True,
+			) -> str:
+		if char:
+			s = s.replace(char, char * 2)
+		if ansi:
+			s = s.replace('\033', '\\033')
+		return s
+
+	@staticmethod
+	def strip(
+			s: str,
+			char: str | None = DEFAULT_MAGIC_CHAR,
+			ansi: bool = True,
+			) -> str:
+		if char:
+			string = ''
+			s_len = len(s)
+			i = 0
+			while i < s_len:
+				if s[i] == char:
+					i += 1
+					if i < s_len and s[i] == char:
+						string += char
+				else:
+					string += s[i]
+				i += 1
+			s = string
+		if ansi:
+			for code in Color.codes:
+				s = s.replace(code, '')
+		return s
 
 
 def cprint(
 		*values: object,
-		sep: str | None = " ",
-		end: str | None = "\n",
+		sep: str = " ",
+		end: str = "\n",
 		reset: bool = True,
 		char: str = Color.DEFAULT_MAGIC_CHAR,
+		strip: bool = False,
+		file: TextIO | Any | None = None,
+		flush: bool = False,
 		) -> None:
-	Color.print(*values, sep=sep, end=end, reset=reset, char=char)
+	Color.print(*values, sep=sep, end=end, reset=reset, char=char, strip=strip, file=file, flush=flush)
+
+
+def cescape(
+		s: str,
+		char: str | None = Color.DEFAULT_MAGIC_CHAR,
+		ansi: bool = True
+		) -> str:
+	return Color.escape(s, char, ansi)
+
+
+def cstrip(
+		s: str,
+		char: str | None = Color.DEFAULT_MAGIC_CHAR,
+		ansi: bool = True,
+		) -> str:
+	return Color.strip(s, char, ansi)
 
 
 class ArgError(Exception):
@@ -302,7 +378,7 @@ class ArgParser:
 		:rtype: ArgParser
 		'''
 		self.free_args.clear()
-		(flag.clear() for flag in self.flags)
+		[flag.clear() for flag in self.flags]
 		i = 0
 		free_only = False
 		while i < len(self.args):
@@ -311,7 +387,8 @@ class ArgParser:
 				free_only = True
 			elif not free_only and arg.startswith('-') and arg != '-':
 				for flag in self.flags:
-					short, long = f'-{flag.short}', f'--{flag.long}'
+					short = f'-{flag.short}' if flag.short else ''
+					long = f'--{flag.long}' if flag.long else ''
 					if not self.case_sensitive:
 						short, long = short.lower(), long.lower()
 					if arg == short or arg == long:
@@ -334,7 +411,7 @@ class ArgParser:
 						raise ArgError(f'Unknown flag {arg}')
 					for j, c in enumerate(arg[1:]):
 						for flag in self.flags:
-							if not flag.combinable:
+							if not flag.combinable or not flag.short:
 								continue
 							sh = flag.short if self.case_sensitive else flag.short.lower()
 							if c == sh:
@@ -381,7 +458,8 @@ class ArgParser:
 		for flag in self.flags:
 			short, long = flag.short, flag.long
 			if not self.case_sensitive:
-				short, long = short.lower(), long.lower()
+				short = short.lower() if short else None
+				long = long.lower() if long else None
 			if identifier == short or identifier == long:
 				return flag
 		return None

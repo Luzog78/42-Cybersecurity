@@ -20,6 +20,7 @@
 !*.html
 !*.css
 !*.js
+!*.ejs
 !*.json
 !*.yml
 !*.sql
@@ -28,6 +29,7 @@
 !*.env
 !*.conf
 !*.ttf
+!.dockerignore
 !.gitignore
 !.gitmodules
 !Dockerfile
@@ -41,8 +43,12 @@
 
 build
 *.tmp.*
+tmp-*
 *subject.pdf
 .vscode
 __pycache__
 venv
 secret*
+node_modules
+package-lock.json
+Vaccine/out
