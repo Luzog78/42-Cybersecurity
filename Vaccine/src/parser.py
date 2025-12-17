@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/28 09:59:49 by luzog78           #+#    #+#              #
-#    Updated: 2025/12/16 02:00:30 by luzog78          ###   ########.fr        #
+#    Updated: 2025/12/17 04:31:43 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,13 @@ def parse(app: Vaccine, args: ArgParser) -> int | None:
 		return 1
 
 	app.url = args.free_args[0]
+
+	if (injections_mode := args.get_value('m')) is None:
+		injections_mode = 'all'
+	if injections_mode not in ['all', 'stacked', 'union', 'blind']:
+		print_error(ArgError(f'Injections mode not supported: "{injections_mode}"'), traceback=False, use_cprint=True)
+		return 1
+	app.injections_mode = injections_mode
 
 	if (injections_file := args.get_value('i')) is None:
 		injections_file = Vaccine.DEFAULT_INJECTIONS_FILE

@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/02 09:16:15 by ysabik            #+#    #+#              #
-#    Updated: 2025/12/16 03:05:05 by luzog78          ###   ########.fr        #
+#    Updated: 2025/12/17 04:32:18 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -163,6 +163,7 @@ class Vaccine:
 			method: str = '',
 			headers: dict[str, str] = {},
 			injections: dict[str, Any] = {},
+			injections_mode: str = 'all',
 			verbose: bool = False,
 			) -> None:
 		self.out_file = out_file
@@ -172,10 +173,12 @@ class Vaccine:
 		self.method = method
 		self.headers = headers
 		self.injections = injections
+		self.injections_mode = injections_mode
 		self.verbose = verbose
 
 		self.forms: list[Form] = []
 		self.server: DBServer = DBServer()
+		self.request_count: int = 0
 
 		self.start_time: datetime.datetime | None = None
 		self.analysis_time: datetime.datetime | None = None
@@ -216,6 +219,7 @@ class Vaccine:
 			'start_time': format_datetime(self.start_time),
 			'analysis_time': format_datetime(self.analysis_time, self.start_time),
 			'exploitation_time': format_datetime(self.exploitation_time, self.analysis_time),
+			'total_requests': self.request_count,
 			'presets': {
 				'url': self.url,
 				'method': self.method,
@@ -314,6 +318,8 @@ def request(
 				data=data,
 				timeout=timeout,
 			)
+		if Vaccine._instance:
+			Vaccine._instance.request_count += 1
 		if raise_for_status:
 			response.raise_for_status()
 		return response
@@ -354,6 +360,10 @@ def extract_unique_data(
 		data = html.unescape(data)
 		text = html.unescape(text)
 	splitted = text.split(delimiter)
-	if len(splitted) >= 3 and splitted[1] != data:
-		return splitted[1]
+	if len(splitted) >= 3:
+		splitted = splitted[1:]
+		while len(splitted) >= 2:
+			if splitted[0] != data:
+				return splitted[0]
+			splitted = splitted[2:]
 	return None

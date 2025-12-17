@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: vulnerable_postgres
+    environment:
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: vulnerable_db
+      POSTGRES_USER: webapp
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webapp -d vulnerable_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: rootpassword
+    ports:
+      - "8081:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  webapp_postgres:
+    build: ./webapp
+    container_name: vulnerable_webapp_postgres
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_USER: webapp
+      DB_PASSWORD: rootpassword
+      DB_NAME: vulnerable_db
+    networks:
+      - app_network
+    restart: on-failure
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge

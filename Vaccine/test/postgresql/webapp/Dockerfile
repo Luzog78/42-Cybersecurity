@@ -1,14 +1,25 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    error_based.py                                     :+:      :+:    :+:    #
+#    Dockerfile                                         :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/12/15 18:52:24 by luzog78           #+#    #+#              #
-#    Updated: 2025/12/16 02:48:04 by luzog78          ###   ########.fr        #
+#    Created: 2025/12/16 03:01:26 by luzog78           #+#    #+#              #
+#    Updated: 2025/12/16 03:01:26 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-def error_based_exploit() -> bool:
-	return False
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]

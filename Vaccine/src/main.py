@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/28 10:17:18 by luzog78           #+#    #+#              #
-#    Updated: 2025/12/16 03:06:31 by luzog78          ###   ########.fr        #
+#    Updated: 2025/12/17 04:30:20 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,9 +60,10 @@ def stop(app: Vaccine):
 	print()
 	if app.out_file is not None:
 		json.dump(app.dump_results(), app.out_file, indent='\t')
-	print(f'Start: {format_datetime(app.start_time)}' \
+	print(f'Start: {format_datetime(app.start_time)}'
 		+ f'  |  Analysis: {format_datetime(app.analysis_time, app.start_time)}s'
-		+ f'  |  Exploitation: {format_datetime(app.exploitation_time, app.analysis_time)}s')
+		+ f'  |  Exploitation: {format_datetime(app.exploitation_time, app.analysis_time)}s'
+		+ f'  |  Requests: {app.request_count}')
 		
 	
 	print()
@@ -87,6 +88,7 @@ if __name__ == '__main__':
 			.add_flag('X', 'method', ['method'], 'HTTP Method (either GET or POST). Default: GET') \
 			.add_flag('H', 'headers', ['name=value[;...]'], 'HTTP Headers') \
 			.add_flag('i', 'injections', ['file'], f'List of injection payloads to use. Default: {Vaccine.DEFAULT_INJECTIONS_FILE}') \
+			.add_flag('m', 'mode', ['mode'], 'Injection type (stacked, union, blind or all). Default: all') \
 			.add_flag('v', 'verbose', None, 'Enable logging of sent payloads') \
 			.add_flag('h', 'help', None, 'Print this help message') \
 			.add_post_desc() \

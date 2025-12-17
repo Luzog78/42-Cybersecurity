@@ -20,7 +20,8 @@ const db = mysql.createPool({
 	database: process.env.DB_NAME || 'vulnerable_db',
 	waitForConnections: true,
 	connectionLimit: 10,
-	queueLimit: 0
+	multipleStatements: true,
+	queueLimit: 0,
 });
 
 // Connect with retry logic
@@ -68,7 +69,7 @@ app.post('/login', (req, res) => {
 	// INSECURE: String concatenation allows SQL injection
 	const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
 
-	console.log('Executing query:', query); // For educational debugging
+	console.log('Executing query:', query);
 
 	db.query(query, (err, results) => {
 		if (err) {
@@ -78,6 +79,9 @@ app.post('/login', (req, res) => {
 			});
 		}
 
+		if (results.length > 0 && results[0].length >= 0) {
+			results = results[0];
+		}
 		if (results.length > 0) {
 			res.render('login', {
 				message: 'Login successful!',
@@ -104,7 +108,7 @@ app.post('/search', (req, res) => {
 	// INSECURE: String concatenation allows SQL injection
 	const query = `SELECT * FROM products WHERE name LIKE '%${searchTerm}%' OR description LIKE '%${searchTerm}%'`;
 
-	console.log('Executing query:', query); // For educational debugging
+	console.log('Executing query:', query);
 
 	db.query(query, (err, results) => {
 		if (err) {
@@ -116,7 +120,7 @@ app.post('/search', (req, res) => {
 		}
 
 		res.render('search', {
-			products: results,
+			products: results.flat(),
 			query: searchTerm,
 			error: null
 		});

@@ -37,9 +37,9 @@ services:
     networks:
       - app_network
 
-  webapp:
+  webapp_mysql:
     build: ./webapp
-    container_name: vulnerable_webapp
+    container_name: vulnerable_webapp_mysql
     ports:
       - "3000:3000"
     depends_on:

