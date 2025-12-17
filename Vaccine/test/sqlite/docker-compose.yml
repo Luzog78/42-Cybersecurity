@@ -1,0 +1,20 @@
+services:
+  webapp_sqlite:
+    build: ./webapp
+    container_name: vulnerable_webapp_sqlite
+    ports:
+      - "3000:3000"
+    volumes:
+      - sqlite_data:/app/data
+    environment:
+      DB_FILE: /app/data/vulnerable.db
+    networks:
+      - app_network
+    restart: on-failure
+
+volumes:
+  sqlite_data:
+
+networks:
+  app_network:
+    driver: bridge
