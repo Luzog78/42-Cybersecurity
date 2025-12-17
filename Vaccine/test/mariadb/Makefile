@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/16 03:01:05 by luzog78           #+#    #+#              #
-#    Updated: 2025/12/17 05:29:46 by luzog78          ###   ########.fr        #
+#    Updated: 2025/12/17 05:24:12 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -76,15 +76,15 @@ logs:
 
 
 logs-db:
-	$(DOCKER_COMPOSE) logs -f mysql || true
+	$(DOCKER_COMPOSE) logs -f mariadb  || true
 
 
 logs-ui:
-	$(DOCKER_COMPOSE) logs -f phpmyadmin_mysql || true
+	$(DOCKER_COMPOSE) logs -f phpmyadmin_mariadb || true
 
 
 logs-web:
-	$(DOCKER_COMPOSE) logs -f webapp_mysql || true
+	$(DOCKER_COMPOSE) logs -f webapp_mariadb || true
 
 
 define RETURN

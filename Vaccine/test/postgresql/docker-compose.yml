@@ -20,9 +20,9 @@ services:
       retries: 20
       start_period: 5s
 
-  pgadmin:
+  pgadmin_postgres:
     image: dpage/pgadmin4
-    container_name: pgadmin
+    container_name: pgadmin_postgres
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: rootpassword

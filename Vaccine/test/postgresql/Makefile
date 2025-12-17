@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/16 03:01:05 by luzog78           #+#    #+#              #
-#    Updated: 2025/12/17 03:36:41 by luzog78          ###   ########.fr        #
+#    Updated: 2025/12/17 05:32:59 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,7 +80,7 @@ logs-db:
 
 
 logs-ui:
-	$(DOCKER_COMPOSE) logs -f pgadmin || true
+	$(DOCKER_COMPOSE) logs -f pgadmin_postgres || true
 
 
 logs-web:
