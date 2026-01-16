@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/12/16 03:01:05 by luzog78           #+#    #+#              #
-#    Updated: 2025/12/17 05:32:59 by luzog78          ###   ########.fr        #
+#    Updated: 2026/01/16 16:30:50 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,8 @@ help:
 	@echo "  logs-db      - Show database service logs"
 	@echo "  logs-ui      - Show database UI service logs"
 	@echo "  logs-web     - Show webapp service logs"
+	@echo
+	@echo "  open         - Open in your default web browser"
 
 
 up:
@@ -87,6 +89,10 @@ logs-web:
 	$(DOCKER_COMPOSE) logs -f webapp_postgres || true
 
 
+open:
+	xdg-open http://localhost:3000 || open http://localhost:3000 || true
+
+
 define RETURN
 	@if [ $$? -eq 0 ]; then \
 	    echo "$(1)"; \
@@ -96,4 +102,4 @@ define RETURN
 endef
 
 
-.PHONY: all help up down clean fclean prune ps logs logs-db logs-ui logs-web
+.PHONY: all help up down clean fclean prune ps logs logs-db logs-ui logs-web open

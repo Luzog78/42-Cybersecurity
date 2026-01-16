@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/28 10:17:18 by luzog78           #+#    #+#              #
-#    Updated: 2025/12/17 05:01:18 by luzog78          ###   ########.fr        #
+#    Updated: 2025/12/21 15:59:32 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,9 +81,22 @@ if __name__ == '__main__':
 	ap = ArgParser(sys.argv[1:]) \
 			.add_pre_desc('42-Cybersecurity - Vaccine | SQL Injector') \
 			.add_pre_desc() \
+			.add_pre_desc('Auto SQL Injector supporting:') \
+			.add_pre_desc('  - Servers: MySQL, MariaDB, PostgreSQL, SQLite;') \
+			.add_pre_desc('  - Injections: Stacked, Union, Blind, Boolean;') \
+			.add_pre_desc('  - Auto-adapt limit: Yes') \
+			.add_pre_desc() \
+			.add_pre_desc('Given an url, it will search for every form and try to send') \
+			.add_pre_desc(' suspicious payloads to find the injectable fields.') \
+			.add_pre_desc('Once the fields discovered, try to exploit them using the') \
+			.add_pre_desc(' configured injection.json file.') \
+			.add_pre_desc() \
+			.add_pre_desc('NOTE: Some server can be more "tricky" to inject. For these') \
+			.add_pre_desc(' servers, you need to edit (use a custom) injection.json file.') \
+			.add_pre_desc() \
 			.add_pre_desc('Usage: ./vaccine [FLAGS] <URL>') \
-			.add_flag('o', 'out', ['file'], f'Dump the data in an output file. Default: {Vaccine.DEFAULT_OUTFILE}') \
-			.add_flag('d', 'logfile', ['file'], f'Dump the logs in a log file. Default: {Vaccine.DEFAULT_LOGFILE}') \
+			.add_flag('o', 'out', ['file'], f'Dump the data in an output file (\'w\' mode). Default: {Vaccine.DEFAULT_OUTFILE}') \
+			.add_flag('d', 'logfile', ['file'], f'Dump the logs in a log file (\'a\' mode). Default: {Vaccine.DEFAULT_LOGFILE}') \
 			.add_flag('c', 'colored', None, 'Enable ANSI colored output in the log file.') \
 			.add_flag('X', 'method', ['method'], 'HTTP Method (either GET or POST). Default: GET') \
 			.add_flag('H', 'headers', ['name=value[;...]'], 'HTTP Headers') \
@@ -91,6 +104,10 @@ if __name__ == '__main__':
 			.add_flag('m', 'mode', ['mode'], 'Injection type (stacked, union, blind-bool or all). Default: all') \
 			.add_flag('v', 'verbose', None, 'Enable logging of sent payloads') \
 			.add_flag('h', 'help', None, 'Print this help message') \
+			.add_post_desc() \
+			.add_post_desc('Example:') \
+			.add_post_desc('  ./vaccine http://localhost:3000/login') \
+			.add_post_desc('  ./vaccine http://testphp.vulnweb.com/search.php -v -m union -i injection-x.x.json -H \'User-Agent=Vaccine;Accept=*/*\'') \
 			.add_post_desc() \
 			.add_post_desc('Credits: ysabik (https://github.com/Luzog78)')
 
