@@ -52,3 +52,5 @@ secret*
 node_modules
 package-lock.json
 Vaccine/out
+
+!arachnida/test/**/*.png
