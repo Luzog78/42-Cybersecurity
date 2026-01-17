@@ -3,15 +3,17 @@
 #                                                         :::      ::::::::    #
 #    spider.py                                          :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
+#    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/15 13:17:06 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/19 13:38:45 by ysabik           ###   ########.fr        #
+#    Updated: 2026/01/17 14:22:06 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import os
 import sys
+import time
+from typing import Any
 import requests
 import traceback
 from bs4 import BeautifulSoup
@@ -42,6 +44,9 @@ def error(*values: object,
 	return 1
 
 
+HEADERS = {'User-Agent': 'Spider/1.0 (dummy@spider.org) Arachnida/1.00'}
+
+
 class File:
 	def __init__(self, url: str, path: str):
 		self.url: str			= url
@@ -57,8 +62,8 @@ class File:
 
 	def download(self) -> 'File':
 		try:
-			response = requests.get(self.url)
-			if response.status_code != 200:
+			response = requests.get(self.url, headers=HEADERS)
+			if response.status_code not in (200, 201, 302, 304):
 				error(f'{self.url} returned status code {response.status_code}')
 			try:
 				os.makedirs('/'.join(self.path.split('/')[:-1]))
@@ -105,6 +110,7 @@ class Spider:
 		self.path: str				= './data/'
 		self.is_recursive: bool		= False
 		self.recursion_limit: int	= 5
+		self.sleep: float			= 0.0
 
 		self.url_base: str
 		self.url_netloc: str
@@ -176,10 +182,12 @@ class Spider:
 		return urljoin(current, url), Spider.get_url_base(parsed) == self.url_base
 
 	def crawl(self) -> int:
-		self.url_base = Spider.get_url_base(self.url)
-		if not self.url_base:
+		assert self.url is not None, "URL is not set"
+		url_base = Spider.get_url_base(self.url)
+		if not url_base:
 			error(f"Bad URL format. ('{self.url}')")
 			return 1
+		self.url_base = url_base
 		self.url_netloc = urlparse(self.url).netloc
 
 		self.urls = { (self.url, 0) }
@@ -189,18 +197,21 @@ class Spider:
 			self.visited.add(url)
 			print(f"{Color.FAINT}Analysis of depth [ {Color.RESET}{Color.CYAN}{Color.BOLD}{depth}{Color.RESET}{Color.FAINT} ] - '{Color.RESET}{Color.ITALIC}{url}{Color.RESET}{Color.FAINT}'... {Color.RESET}")
 			try:
-				response = requests.get(url, params={'User-Agent': 'Mozilla/5.0'})
+				response = requests.get(url, headers=HEADERS)
 				if response.status_code != 200:
 					error(f'{url} returned status code {response.status_code}')
 					continue
-				soup = BeautifulSoup(response.content, 'html.parser')
+				soup = BeautifulSoup(response.text, 'html.parser')
 				for file in soup.find_all(src=True):
 					src = file.get('src')
 					if src is None:
 						continue
-					src, _ = self.normalize_url(src, url)
+					src, _ = self.normalize_url(src, url)  # type: ignore
 					parsed_src = urlparse(src)
 					if Spider.is_searched_file(parsed_src):
+						if src in self.viewed:
+							continue
+
 						path = parsed_src.netloc + parsed_src.path
 						if parsed_src.query:
 							path += '?' + parsed_src.query
@@ -208,19 +219,25 @@ class Spider:
 							path += '#' + parsed_src.fragment
 						path = path.replace(f'{self.url_netloc}/', '').replace('/', '__')
 						path = f'{self.path}/{self.url_netloc}/{path}'
-						if path in self.viewed:
-							continue
-						self.viewed.add(path)
+						if (too_long := len(path) > 140):
+							path = path[:137] + '...'
+						if too_long or parsed_src.query or parsed_src.fragment:
+							path += '.' + parsed_src.path.split('.')[-1]
+
 						f = File(src, path)
-						self.files.add(f)
 						f.download()
+						if self.sleep:
+							time.sleep(self.sleep)
+						self.files.add(f)
+						self.viewed.add(src)
+
 				if not self.is_recursive or depth >= self.recursion_limit >= 0:
 					continue
 				for link in soup.find_all(href=True):
 					href = link.get('href')
 					if href is None:
 						continue
-					href, same = self.normalize_url(href, url)
+					href, same = self.normalize_url(href, url)  # type: ignore
 					if same and href not in self.visited:
 						self.urls.add((href, depth + 1))
 			except Exception as e:
@@ -237,22 +254,27 @@ def parsing() -> Spider | int:
 	clean = False
 
 
-	def limit_parsing_error(l: int | None) -> int:
-		error("'-l' attribute must be followed by a number (<0 for no limit)", code=None)
+	def limit_parsing_error(l: Any) -> int:
+		error("'-l' attribute must be followed by a number (<0 for no limit)")
 		if l is not None:
 			return error(f"'{l}' isn't a number")
 		return 1
 
 
 	def syntax_error(code: int = 1, color: str | None = Color.RED) -> int:
+		error('Spider is a web crawler. It takes a URL and crawls it for links and files.', color=color)
+		error('Its goal is to find and download certain files (.jpg, .jpeg, .png, .gif and .bmp).', color=color)
+		error(color=color)
 		error('Syntax:', color=color)
 		error(f'{sys.argv[0]} [flags...] <URL>', color=color)
 		error(color=color)
 		error('Flags:', color=color)
-		error('  -r              recursive', color=color)
-		error('  -l <limit>      recursion limit', color=color)
-		error('  -p <save_path>  path to save files', color=color)
-		error('  -c              clean files', color=color)
+		error('  -r               recursively downloads the files', color=color)
+		error('  -l <limit>       recursion limit (default: 5)', color=color)
+		error('  -p <save_path>   path to save files (default: "./data/")', color=color)
+		error('  -c               clear files in "save_path" before crawling', color=color)
+		error('  -s <sleep_time>  time (in sec) to wait between requests (default: 0)', color=color)
+		error('  -h, --help       display this help message', color=color)
 		return code
 
 
@@ -279,6 +301,15 @@ def parsing() -> Spider | int:
 						return error("'-p' attribute must be followed by a path")
 				elif c == 'c':
 					clean = True
+				elif c == 's':
+					if i + 1 < len(sys.argv):
+						i += 1
+						try:
+							spider.sleep = float(sys.argv[i])
+						except ValueError:
+							return error(f"'{sys.argv[i]}' isn't a number")
+					else:
+						return error("'-s' attribute must be followed by a number")
 				elif c == 'h':
 					return syntax_error(code=0, color=Color.CYAN)
 				else:
