@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2026/01/17 12:39:00 by luzog78          ###   ########.fr        #
+#    Updated: 2026/01/17 14:52:47 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,11 +67,14 @@ $(VENVPATH)/.__installed/__%: $(VENVPATH)
 
 
 clean:
-	@echo "[REMV] Removing virtual environment..."
-	rm -rf $(VENVPATH)
+	@echo "[REMV] Removing every __pycache__ and .pyc files..."
+	find . -name "__pycache__" -exec rm -rf {} +
+	find . -name "*.pyc" -exec rm -f {} +
 
 
 fclean: clean
+	@echo "[REMV] Removing virtual environment..."
+	rm -rf $(VENVPATH)
 	@echo "[REMV] Removing executables..."
 	rm -f $(SPIDER) $(SCORPION)
 
@@ -81,7 +84,7 @@ re: fclean all
 
 test:
 	@echo "Running test server..."
-	cd test && python3 server.py
+	cd test && ../$(VENVPATH)/bin/python server.py
 
 
 define compile

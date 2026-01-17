@@ -17,6 +17,7 @@
 - **Version:** *1.00*
 - **Subject:** [en.subject.pdf](https://cdn.intra.42.fr/pdf/pdf/88967/en.subject.pdf)
 - **Author(s):** *[ysabik](https://profile.intra.42.fr/users/ysabik)*
+- **Public repo:** [GitHub](https://github.com/Luzog78/42-Cybersecurity)
 
 <br>
 
