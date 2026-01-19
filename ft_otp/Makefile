@@ -6,7 +6,7 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2025/11/27 13:36:26 by luzog78          ###   ########.fr        #
+#    Updated: 2026/01/19 01:48:16 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,18 @@ __REQ			= $(addprefix $(VENVPATH)/.__installed/__, $(REQUIREMENTS))
 
 
 all: $(NAME)
+
+
+help:
+	@echo "Available targets:"
+	@echo "  all       - Build all components"
+	@echo "  $(NAME)    - Build the ft_otp component"
+	@echo
+	@echo "  clean     - Remove cache artifacts"
+	@echo "  fclean    - Remove all artifacts"
+	@echo "  re        - Rebuild all components"
+	@echo
+	@echo "  help      - Show this help message"
 
 
 $(NAME): $(__REQ)
@@ -41,11 +53,16 @@ $(VENVPATH)/.__installed/__%: $(VENVPATH)
 
 
 clean:
-	@echo "[REMV] Removing virtual environment..."
-	rm -rf $(VENVPATH)
+	@echo "[REMV] Removing every __pycache__ and .pyc files..."
+	find . -name "__pycache__" -exec rm -rf {} +
+	find . -name "*.pyc" -exec rm -f {} +
 
 
 fclean: clean
+	@echo "[REMV] Removing __qrcode__ temp files..."
+	rm -rf __qrcode__*
+	@echo "[REMV] Removing virtual environment..."
+	rm -rf $(VENVPATH)
 	@echo "[REMV] Removing executables..."
 	rm -f $(NAME)
 
@@ -66,4 +83,4 @@ define compile
 endef
 
 
-.PHONY: all clean fclean re
+.PHONY: all help clean fclean re

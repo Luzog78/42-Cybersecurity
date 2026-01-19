@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    ft_otp.py                                          :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
+#    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 14:21:46 by ysabik            #+#    #+#              #
-#    Updated: 2024/12/01 02:50:51 by ysabik           ###   ########.fr        #
+#    Updated: 2026/01/19 01:49:16 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,13 +74,14 @@ def create_qrcode_ascii(key: bytes) -> str:
 		return f.read()
 	except Exception as e:
 		print(f'§c[{e.__class__.__name__}] §4{e}')
+		return ''
 
 
 def create_qrcode(key: bytes):
 	try:
 		secret = base64.b32encode(key)
 		url = f'otpauth://totp/42-Cybersecurity?secret={str(secret)[2:-1]}&issuer=42-Cybersecurity&digits=6'
-		qrcode.make(url, error_correction=qrcode.ERROR_CORRECT_L).save('__qrcode__.png')
+		qrcode.make(url, error_correction=qrcode.ERROR_CORRECT_L).save('__qrcode__.png')  # type: ignore
 	except Exception as e:
 		print(f'§c[{e.__class__.__name__}] §4{e}')
 
@@ -101,33 +102,37 @@ def get_secret(filename: str, verbose: bool = False) -> bytes | None:
 		return None
 
 
-def get_code(filename: str, period: int = 30, verbose: bool = False) -> int:
+def get_code(filename: str, period: int = 30, verbose: bool = False) -> int | None:
 	try:
 		key = get_secret(filename, verbose=verbose)
 		if key is None:
-			return 0
+			return None
 		return totp(key, period)
 	except Exception as e:
 		if verbose:
 			print(f'§c[{e.__class__.__name__}] §4{e}')
-		return 0
+		return None
 
 
 def open_gui(verbose: bool = False):
+	TITLE = '42-Cybersecurity - ft_otp'
 	while True:
 		try:
-			choice = easygui.buttonbox('Choose an action', '42-Cybersecurity - ft_otp', ['Generate key', 'Use key', 'Quit'])
+			choice = easygui.buttonbox('Choose an action', TITLE, ['Generate key', 'Use key', 'Quit'])
 			if choice == 'Generate key':
-				g_file = easygui.filesavebox('Choose where to save the key', '42-Cybersecurity - ft_otp', 'key.key')
+				g_file = easygui.filesavebox('Choose where to save the key', TITLE, 'key.key')
 				if g_file:
 					create_qrcode(generate_key(g_file, verbose=verbose))
-					easygui.msgbox(f'Key generated and saved in {g_file}', '42-Cybersecurity - ft_otp', image='__qrcode__.png')
+					easygui.msgbox(f'Key generated and saved in {g_file}', TITLE, image='__qrcode__.png')
 				continue
 			elif choice == 'Use key':
-				k_file = easygui.fileopenbox('Choose the key to use', '42-Cybersecurity - ft_otp', 'key.key')
+				k_file = easygui.fileopenbox('Choose the key to use', TITLE, 'key.key')
 				if k_file:
 					code = get_code(k_file, verbose=verbose)
-					easygui.msgbox(f'The code is {code:0>6}', '42-Cybersecurity - ft_otp')
+					if code is not None:
+						easygui.msgbox(f'The code is {code:0>6}', TITLE)
+					else:
+						easygui.msgbox('Failed to get the code', TITLE)
 				continue
 		except Exception as e:
 			if verbose:
@@ -138,8 +143,8 @@ def open_gui(verbose: bool = False):
 if __name__ == '__main__':
 	ap = ArgParser(sys.argv[1:]) \
 			.add_pre_desc('42-Cybersecurity - ft_otp | TOTP generator') \
-			.add_pre_desc('> (RFC 6238)[https://tools.ietf.org/html/rfc6238]') \
-			.add_pre_desc('> (RFC 4226)[https://tools.ietf.org/html/rfc4226]') \
+			.add_pre_desc(' > [RFC 6238](https://tools.ietf.org/html/rfc6238)') \
+			.add_pre_desc(' > [RFC 4226](https://tools.ietf.org/html/rfc4226)') \
 			.add_pre_desc() \
 			.add_pre_desc('Usage: ./ft_otp [FLAGS]') \
 			.add_flag('g', 'generate', ['file.key'], 'Generate a new key, and save it in <file.key>') \
@@ -162,8 +167,15 @@ if __name__ == '__main__':
 		print(ap)
 		exit(0)
 
-	verbose = ap.get_value('v', False)
+	verbose = not not ap.get_value('v', False)
 	time_step = ap.get_value('s', 30)
+	assert time_step is not None
+	if not isinstance(time_step, int):
+		try:
+			time_step = int(time_step)
+		except ValueError:
+			print('§cTime step must be an integer')
+			exit(1)
 
 	g_file = ap.get_value('g')
 	if g_file:
@@ -182,7 +194,8 @@ if __name__ == '__main__':
 	k_file = ap.get_value('k')
 	if k_file:
 		code = get_code(k_file, time_step, verbose=True)
-		print(f'{code:0>6}')
+		if code is not None:
+			print(f'{code:0>6}')
 
 	qr_flag = ap.get_value('qr')
 	if qr_flag:
