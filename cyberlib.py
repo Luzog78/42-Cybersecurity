@@ -6,12 +6,11 @@
 #    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/21 09:31:07 by ysabik            #+#    #+#              #
-#    Updated: 2025/12/16 03:03:16 by luzog78          ###   ########.fr        #
+#    Updated: 2026/01/19 04:47:05 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-from typing import Any
-from typing import TextIO
+from typing import Any, TypeVar, TextIO
 
 
 __var_print_backup = print
@@ -25,6 +24,9 @@ def _print(
 		) -> None:
 	'''Builtin print function alias'''
 	__var_print_backup(*values, sep=sep, end=end, file=file, flush=flush)
+
+
+T = TypeVar('T')
 
 
 class Color:
@@ -464,7 +466,7 @@ class ArgParser:
 				return flag
 		return None
 
-	def get_value(self, identifier: int | str, default: Any | None = None) -> str | None:
+	def get_value(self, identifier: int | str, default: T = None) -> str | T:
 		'''Get the UNIQUE (first) value of a flag by its identifier
 
 		:param identifier: The identifier of the flag (either the index, the short or the long name)
