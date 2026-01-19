@@ -54,3 +54,5 @@ package-lock.json
 Vaccine/out
 
 !arachnida/test/**/*.png
+!ft_onion/srcs/**/*
+!ft_onion/ssh.key

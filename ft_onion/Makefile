@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+         #
+#    By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/19 13:16:00 by ysabik            #+#    #+#              #
-#    Updated: 2024/10/23 12:39:20 by ysabik           ###   ########.fr        #
+#    Updated: 2026/01/19 03:29:28 by luzog78          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,17 +17,22 @@ DOCKERFILE		= Dockerfile
 
 help:
 	@echo "Usage: make [target]"
-	@echo ""
+	@echo
 	@echo "Targets:"
-	@echo "  all      - Build and run Docker container"
+	@echo "  all      - Build, run and then tell the hostname"
+	@echo
 	@echo "  build    - Build Docker image"
-	@echo "  run      - Run Docker container"
+	@echo "  run      - Build and Run Docker container"
 	@echo "  stop     - Stop Docker container"
+	@echo
 	@echo "  logs     - Show Docker container logs"
 	@echo "  shell    - Start shell in Docker container"
-	@echo "  clean    - Remove Docker image"
+	@echo "  tor      - Get Tor hidden service hostname"
+	@echo
+	@echo "  clean    - Stop and Remove Docker image"
 	@echo "  fclean   - Alias for clean"
 	@echo "  re       - Alias for fclean all"
+	@echo
 	@echo "  help     - Show this help message"
 
 
@@ -49,7 +54,9 @@ build:
 
 run: build
 	@echo "[RUNN] Running Docker container..."
-	$(DOCKER) run -d --name $(NAME) $(NAME)
+	$(DOCKER) run -d --name $(NAME) -p 8080:80 -p 4242:4242 $(NAME)
+	@echo "http://localhost:8080"
+	@echo "ssh root@localhost -p 4242"
 
 
 stop:
@@ -79,4 +86,4 @@ fclean: clean
 re: fclean all
 
 
-.PHONY: all clean fclean re build run stop logs shell help
+.PHONY: all tor clean fclean re build run stop logs shell help

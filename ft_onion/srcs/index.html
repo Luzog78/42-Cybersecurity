@@ -3,13 +3,43 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	<style>
+		#s {
+			margin: auto;
+			width: min(200px, 100vw);
+			height: min(50px, 100vh);
+			color: #000;
+			background: transparent;
+			border: solid #000 2px;
+			border-radius: 20px;
+			font-size: 30px;
+			margin-top: 50px;
+			cursor: pointer;
+			transition: all 0.8s ease;
+		}
+
+		#s:hover {
+			background: #000;
+			color: #fff;
+		}
+
+		#p {
+			font-size: 10px;
+			line-height: 10px;
+			letter-spacing: 4px;
+			width: 100vw;
+			height: 100vh;
+			font-family: monospace;
+		}
+	</style>
 </head>
 <body>
 	<video id="v" autoplay="true" style="display: none;"></video>
 	<canvas id="c" width="640" height="480" style="display: none;"></canvas>
 	<div id="d" style="width: 100vw; text-align: center;">
 		<h3>42-Cybersecurity - ft_onion</h3>
-		<pre id="p" style="font-size: 10px; line-height: 10px; letter-spacing: 4px; width: 100vw; height: 100vh; font-family: monospace;"></pre>
+		<button id="s">Start</button>
+		<pre id="p"></pre>
 	</div>
 
 	<script type="application/javascript">
@@ -18,19 +48,27 @@
 		var v = document.getElementById('v');
 		var c = document.getElementById('c');
 		var p = document.getElementById('p');
+		var s = document.getElementById('s');
 		var ctx = c.getContext('2d');
 
-		navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+		s.addEventListener('click', function() {
+			startCamera();
+		}, false);
 
-		navigator.getMedia({
-			video: true,
-			audio: false
-		}, function(stream) {
-			v.srcObject = stream;
-			v.play();
-		}, function(error) {
-			console.log(error);
-		});
+		function startCamera() {
+			s.style.color = null;
+			navigator.mediaDevices.getUserMedia({
+				video: true,
+				audio: false
+			}).then(function(stream) {
+				s.style.display = 'none';
+				v.srcObject = stream;
+				v.play();
+			}).catch(function(error) {
+				s.style.color = '#f00';
+				console.log(error);
+			});
+		}
 
 		v.addEventListener('play', function() {
 			draw(this, ctx, p, c.width, c.height);
@@ -72,7 +110,6 @@
 			}
 			p.innerHTML = ascii;
 		}
-
 	</script>
 </body>
 </html>
