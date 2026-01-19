@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   source.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 16:10:05 by ysabik            #+#    #+#             */
-/*   Updated: 2024/12/01 02:15:49 by ysabik           ###   ########.fr       */
+/*   Updated: 2026/01/19 04:35:22 by luzog78          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
  * Next, password is read 3 by 3 until the end of the buffer.
  * Interprets the 3 characters as char-integers.
  * Then adds the found char to `str`.
+ * 
+ * The goal is to have "delabere" in `str` at the end.
  *
  * > "d" is already in `str`
  * > "101" to add "e"
@@ -35,7 +37,6 @@
  * > "101" to add "e"
  *
  * Final password: "00101108097098101114101"
- *
  */
 
 // bits 32

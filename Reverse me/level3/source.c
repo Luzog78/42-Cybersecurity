@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   source.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 16:10:05 by ysabik            #+#    #+#             */
-/*   Updated: 2024/12/01 02:49:25 by ysabik           ###   ########.fr       */
+/*   Updated: 2026/01/19 04:35:20 by luzog78          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
  *  and with a different password.
  *
  * > "42" to pass `test_1` and `test_2`
+ * 
+ * The goal is to have "********" in `str` at the end.
  *
  * > "*" is already in `str`
  * > "042" to add "*"
@@ -34,7 +36,6 @@
  * > "042" to add "*"
  *
  * Final password: "42042042042042042042042"
- *
  */
 
 // bits 64

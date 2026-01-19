@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   source.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysabik <ysabik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: luzog78 <luzog78@gmail.com>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 14:36:12 by ysabik            #+#    #+#             */
-/*   Updated: 2024/11/30 16:57:16 by ysabik           ###   ########.fr       */
+/*   Updated: 2026/01/19 04:08:10 by luzog78          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int main() {
 
 	int ret = strcmp(buff, key);	// call <strcmp@plt>
 	if (ret != 0)					// cmp 0, eax
-		goto fail;					// jmp <main+160>
+		goto fail;					// jne <main+160>
 
 	printf("Good job.\n");			// call <printf@plt>
 	goto end;						// jmp <main+177>
